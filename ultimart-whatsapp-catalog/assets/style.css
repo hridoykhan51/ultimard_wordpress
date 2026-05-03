@@ -1,0 +1,241 @@
+:root {
+    --ultimart-bg: #f6f1e8;
+    --ultimart-panel: #fffdf9;
+    --ultimart-ink: #1c1712;
+    --ultimart-muted: #6d6257;
+    --ultimart-line: #ddd0c1;
+    --ultimart-accent: #146c43;
+    --ultimart-accent-2: #cf6a32;
+    --ultimart-shadow: 0 18px 40px rgba(38, 28, 18, 0.08);
+}
+
+.ultimart-catalog,
+.ultimart-catalog * {
+    box-sizing: border-box;
+}
+
+.ultimart-catalog {
+    background:
+        radial-gradient(circle at top left, rgba(207, 106, 50, 0.12), transparent 28%),
+        linear-gradient(180deg, #fcf7f0 0%, var(--ultimart-bg) 100%);
+    border: 1px solid var(--ultimart-line);
+    border-radius: 28px;
+    color: var(--ultimart-ink);
+    margin: 24px 0;
+    padding: 28px;
+}
+
+.ultimart-catalog__hero {
+    margin-bottom: 24px;
+}
+
+.ultimart-catalog__eyebrow {
+    color: var(--ultimart-accent-2);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    margin: 0 0 10px;
+    text-transform: uppercase;
+}
+
+.ultimart-catalog__hero h2 {
+    font-size: clamp(28px, 4vw, 42px);
+    line-height: 1.1;
+    margin: 0 0 10px;
+}
+
+.ultimart-catalog__hero p {
+    color: var(--ultimart-muted);
+    font-size: 16px;
+    margin: 0;
+    max-width: 720px;
+}
+
+.ultimart-catalog__layout {
+    display: grid;
+    gap: 22px;
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 440px);
+}
+
+.ultimart-catalog__grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.ultimart-card {
+    background: rgba(255, 255, 255, 0.86);
+    border: 1px solid var(--ultimart-line);
+    border-radius: 22px;
+    box-shadow: var(--ultimart-shadow);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 220px;
+    padding: 20px;
+    text-align: left;
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.ultimart-card:hover,
+.ultimart-card.is-active {
+    border-color: var(--ultimart-accent-2);
+    box-shadow: 0 22px 46px rgba(38, 28, 18, 0.14);
+    transform: translateY(-2px);
+}
+
+.ultimart-card__tag,
+.ultimart-detail__tag {
+    align-self: flex-start;
+    background: rgba(20, 108, 67, 0.1);
+    border-radius: 999px;
+    color: var(--ultimart-accent);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 7px 10px;
+}
+
+.ultimart-card__title {
+    font-size: 20px;
+    line-height: 1.25;
+}
+
+.ultimart-card__excerpt,
+.ultimart-detail__header p,
+.ultimart-detail__section p,
+.ultimart-detail li {
+    color: var(--ultimart-muted);
+    font-size: 15px;
+    line-height: 1.65;
+}
+
+.ultimart-card__action {
+    color: var(--ultimart-accent-2);
+    font-size: 14px;
+    font-weight: 700;
+    margin-top: auto;
+}
+
+.ultimart-detail {
+    background: var(--ultimart-panel);
+    border: 1px solid var(--ultimart-line);
+    border-radius: 24px;
+    box-shadow: var(--ultimart-shadow);
+    padding: 24px;
+}
+
+.ultimart-detail__header h3 {
+    font-size: 28px;
+    line-height: 1.15;
+    margin: 14px 0 10px;
+}
+
+.ultimart-detail__header p {
+    margin: 0;
+}
+
+.ultimart-detail__section {
+    margin-top: 20px;
+}
+
+.ultimart-detail__section h4 {
+    font-size: 16px;
+    margin: 0 0 10px;
+}
+
+.ultimart-detail__section ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.ultimart-detail__section p {
+    margin: 0 0 8px;
+}
+
+.ultimart-order {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: space-between;
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--ultimart-line);
+}
+
+.ultimart-qty__label {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.ultimart-qty__controls {
+    align-items: center;
+    display: inline-flex;
+    gap: 8px;
+}
+
+.ultimart-qty__btn {
+    background: #fff;
+    border: 1px solid var(--ultimart-line);
+    border-radius: 12px;
+    color: var(--ultimart-ink);
+    cursor: pointer;
+    font-size: 24px;
+    height: 44px;
+    width: 44px;
+}
+
+.ultimart-qty__controls input {
+    background: #fff;
+    border: 1px solid var(--ultimart-line);
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    height: 44px;
+    text-align: center;
+    width: 70px;
+}
+
+.ultimart-order__button {
+    background: linear-gradient(135deg, var(--ultimart-accent) 0%, #1d8d58 100%);
+    border-radius: 14px;
+    color: #fff;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 14px 18px;
+    text-decoration: none;
+}
+
+.ultimart-order__button:hover {
+    color: #fff;
+    opacity: 0.92;
+}
+
+@media (max-width: 900px) {
+    .ultimart-catalog {
+        border-radius: 20px;
+        padding: 18px;
+    }
+
+    .ultimart-catalog__layout {
+        grid-template-columns: 1fr;
+    }
+
+    .ultimart-detail {
+        padding: 18px;
+    }
+
+    .ultimart-order {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .ultimart-order__button {
+        text-align: center;
+        width: 100%;
+    }
+}
