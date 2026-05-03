@@ -1,34 +1,91 @@
 # Ultimart WhatsApp Catalog
 
-This plugin gives you a WordPress shortcode that shows your products, lets visitors choose quantity with `+ / -`, and sends the order to WhatsApp.
+This version uses the structure below:
 
-## Install
+- Page 1: product list
+- Page 2: single product detail + quantity + shipping form
+- Orders save in the WordPress database
+- Admin order screen: `WordPress Admin > আল্টিমার্ট অর্ডার`
 
-1. Zip the folder `ultimart-whatsapp-catalog`
-2. In WordPress admin go to `Plugins > Add New > Upload Plugin`
-3. Upload the zip and activate it
+## Shortcodes
 
-## Use
-
-Create a page and paste this shortcode:
+### Product list page
 
 ```text
-[ultimart_products whatsapp="8801XXXXXXXXX"]
+[ultimart_product_list detail_page="/order" title="আমাদের পণ্যসমূহ"]
+```
+
+`detail_page` should be the URL path of your detail page.
+
+Example:
+
+- If your detail page slug is `order`
+- Then use `detail_page="/order"`
+
+### Product detail page
+
+```text
+[ultimart_product_detail whatsapp="8801XXXXXXXXX" back_page="/shop"]
 ```
 
 Replace `8801XXXXXXXXX` with your WhatsApp number.
 
-## What it includes
+## Recommended setup
 
-- 4 products from your text content
-- Product click to show details
-- Quantity `+ / -`
-- WhatsApp order button
+1. Create a page named `Shop`
+2. Put this shortcode there:
 
-## If you want to change products
+```text
+[ultimart_product_list detail_page="/order"]
+```
 
-Edit this file:
+3. Create another page named `Order`
+4. Put this shortcode there:
 
-- `ultimart-whatsapp-catalog.php`
+```text
+[ultimart_product_detail whatsapp="8801XXXXXXXXX" back_page="/shop"]
+```
 
-The product data is inside the `get_products()` function.
+Now customers will:
+
+1. open the Shop page
+2. click a product card
+3. go to the Order page
+4. select quantity
+5. fill shipping address and phone
+6. save the order
+
+## Images
+
+The plugin supports 2 image methods.
+
+### Method 1: local plugin files
+
+Put these files in:
+
+- `assets/images/product-1.jpeg`
+- `assets/images/product-2.jpeg`
+- `assets/images/product-3.jpeg`
+- `assets/images/product-4.jpeg`
+
+### Method 2: WordPress Media Library URLs
+
+Open `ultimart-whatsapp-catalog.php`
+
+Inside `get_products()`, each product has:
+
+```php
+'image_url' => '',
+```
+
+Paste the full image URL there after uploading the image to WordPress Media Library.
+
+If `image_url` is set, the plugin uses that image first.
+
+## Orders
+
+Orders are stored in a custom database table created by the plugin.
+
+To see saved orders:
+
+- `WordPress Admin > আল্টিমার্ট অর্ডার`

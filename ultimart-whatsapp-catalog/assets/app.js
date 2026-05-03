@@ -1,115 +1,121 @@
 (function () {
-    function buildList(items) {
-        return (items || [])
-            .map(function (item) {
-                return "<li>" + item + "</li>";
-            })
-            .join("");
+    function escapeHtml(value) {
+        return String(value || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
     }
 
-    function buildParagraphs(items) {
-        return (items || [])
-            .map(function (item) {
-                return "<p>" + item + "</p>";
-            })
-            .join("");
+    function formatMoney(amount, symbol) {
+        var numeric = Number(amount || 0);
+        return numeric.toLocaleString() + " " + symbol;
     }
 
-    function buildWhatsAppUrl(phone, product, quantity, siteName, pageTitle) {
-        var lines = [
-            "Assalamu Alaikum, আমি এই পণ্যটি অর্ডার করতে চাই:",
-            "",
-            "পণ্যের নাম: " + product.name,
-            "ক্যাটাগরি: " + product.tag,
-            "পরিমাণ: " + quantity,
-            "",
-            "পেজ: " + pageTitle,
-            "ওয়েবসাইট: " + siteName
-        ];
+    document.querySelectorAll("[data-product-detail]").forEach(function (section) {
+        var payload = JSON.parse(section.getAttribute("data-product-detail") || "{}");
+        var product = payload.product || null;
 
-        return "https://wa.me/" + phone + "?text=" + encodeURIComponent(lines.join("\n"));
-    }
+        if (!product) {
+            return;
+        }
 
-    document.querySelectorAll(".ultimart-catalog").forEach(function (catalog) {
-        var payload = JSON.parse(catalog.dataset.catalog || "{}");
-        var products = payload.products || [];
-        var currentProduct = products[0] || null;
+        var form = section.querySelector("[data-order-form]");
+        var formMessage = section.querySelector("[data-form-message]");
+        var submitButton = section.querySelector(".ultimart-order-form__submit");
+        var qtyInput = section.querySelector("[data-quantity]");
+        var whatsappLink = section.querySelector("[data-whatsapp-link]");
+        var totalField = section.querySelector('[data-summary="total"]');
+        var hiddenQuantity = form.querySelector('[data-input="quantity"]');
         var quantity = 1;
 
-        var cards = catalog.querySelectorAll(".ultimart-card");
-        var qtyInput = catalog.querySelector("[data-quantity]");
-        var orderLink = catalog.querySelector("[data-order-link]");
-
-        var fields = {
-            tag: catalog.querySelector('[data-field="tag"]'),
-            name: catalog.querySelector('[data-field="name"]'),
-            excerpt: catalog.querySelector('[data-field="excerpt"]'),
-            description: catalog.querySelector('[data-field="description"]'),
-            features: catalog.querySelector('[data-field="features"]'),
-            why_buy: catalog.querySelector('[data-field="why_buy"]')
-        };
-
-        function syncWhatsAppLink() {
-            if (!currentProduct || !payload.phone) {
-                orderLink.removeAttribute("href");
-                orderLink.textContent = "Shortcode-এ WhatsApp নম্বর দিন";
+        function syncWhatsappLink(orderData) {
+            if (!payload.whatsapp) {
+                whatsappLink.style.display = "none";
                 return;
             }
 
-            orderLink.href = buildWhatsAppUrl(
-                payload.phone,
-                currentProduct,
-                quantity,
-                payload.siteName || "",
-                payload.pageTitle || ""
-            );
-            orderLink.textContent = "WhatsApp-এ অর্ডার পাঠান";
+            whatsappLink.style.display = "inline-flex";
+
+            if (orderData && orderData.whatsapp_url) {
+                whatsappLink.href = orderData.whatsapp_url;
+                return;
+            }
+
+            var lines = [
+                "আসসালামু আলাইকুম, আমি এই পণ্যটি অর্ডার করতে চাই।",
+                "",
+                "পণ্যের নাম: " + product.name,
+                "পরিমাণ: " + quantity,
+                "মোট দাম: " + formatMoney((Number(product.price) || 0) * quantity, payload.currencySymbol || "৳")
+            ];
+
+            whatsappLink.href = "https://wa.me/" + payload.whatsapp + "?text=" + encodeURIComponent(lines.join("\n"));
         }
 
-        function renderProduct(productId) {
-            currentProduct = products.find(function (product) {
-                return product.id === productId;
-            }) || products[0] || null;
-
-            if (!currentProduct) {
-                return;
-            }
-
-            fields.tag.textContent = currentProduct.tag || "";
-            fields.name.textContent = currentProduct.name || "";
-            fields.excerpt.textContent = currentProduct.excerpt || "";
-            fields.description.innerHTML = buildParagraphs(currentProduct.description);
-            fields.features.innerHTML = buildList(currentProduct.features);
-            fields.why_buy.innerHTML = buildList(currentProduct.why_buy);
-
-            cards.forEach(function (card) {
-                card.classList.toggle("is-active", card.dataset.productId === currentProduct.id);
-            });
-
-            quantity = 1;
+        function updateQuantity(nextQuantity) {
+            quantity = Math.max(1, nextQuantity);
             qtyInput.value = String(quantity);
-            syncWhatsAppLink();
+            hiddenQuantity.value = String(quantity);
+            totalField.textContent = formatMoney((Number(product.price) || 0) * quantity, payload.currencySymbol || "৳");
+            syncWhatsappLink();
         }
 
-        cards.forEach(function (card) {
-            card.addEventListener("click", function () {
-                renderProduct(card.dataset.productId);
-            });
-        });
-
-        catalog.querySelectorAll(".ultimart-qty__btn").forEach(function (button) {
+        section.querySelectorAll(".ultimart-qty__btn").forEach(function (button) {
             button.addEventListener("click", function () {
                 if (button.dataset.action === "increase") {
-                    quantity += 1;
-                } else if (button.dataset.action === "decrease") {
-                    quantity = Math.max(1, quantity - 1);
+                    updateQuantity(quantity + 1);
+                    return;
                 }
 
-                qtyInput.value = String(quantity);
-                syncWhatsAppLink();
+                updateQuantity(quantity - 1);
             });
         });
 
-        renderProduct((products[0] || {}).id);
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            formMessage.textContent = "";
+            formMessage.className = "ultimart-order-form__message";
+            submitButton.disabled = true;
+            submitButton.textContent = "সেভ হচ্ছে...";
+
+            var formData = new FormData(form);
+            formData.set("whatsapp", payload.whatsapp || "");
+
+            fetch(payload.ajaxUrl, {
+                method: "POST",
+                body: formData,
+                credentials: "same-origin"
+            })
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (response) {
+                    if (!response.success) {
+                        throw new Error(response.data && response.data.message ? response.data.message : "অর্ডার সেভ করা যায়নি।");
+                    }
+
+                    formMessage.className = "ultimart-order-form__message is-success";
+                    formMessage.innerHTML = "অর্ডার সফলভাবে সেভ হয়েছে। অর্ডার আইডি: <strong>#"
+                        + escapeHtml(response.data.order_id)
+                        + "</strong>";
+
+                    form.reset();
+                    updateQuantity(1);
+                    syncWhatsappLink(response.data);
+                })
+                .catch(function (error) {
+                    formMessage.className = "ultimart-order-form__message is-error";
+                    formMessage.textContent = error.message;
+                })
+                .finally(function () {
+                    submitButton.disabled = false;
+                    submitButton.textContent = "অর্ডার সেভ করুন";
+                });
+        });
+
+        updateQuantity(1);
     });
 })();
