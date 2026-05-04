@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Ultimart WhatsApp Catalog
  * Description: Bangla product list and separate product detail/order page with database order storage.
- * Version: 3.1.4
+ * Version: 3.4.4
  * Author: Hridoy
  */
 
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 }
 
 final class Ultimart_WhatsApp_Catalog {
-    const VERSION = '3.1.4';
+    const VERSION = '3.4.4';
     const TABLE_SUFFIX = 'ultimart_orders';
 
     public function __construct() {
@@ -20,6 +20,7 @@ final class Ultimart_WhatsApp_Catalog {
         add_shortcode('ultimart_products', array($this, 'render_product_list_shortcode'));
         add_shortcode('ultimart_product_list', array($this, 'render_product_list_shortcode'));
         add_shortcode('ultimart_product_detail', array($this, 'render_product_detail_shortcode'));
+        add_shortcode('ultimart_campaign_video', array($this, 'render_campaign_video_shortcode'));
         add_action('wp_ajax_ultimart_place_order', array($this, 'handle_order_submission'));
         add_action('wp_ajax_nopriv_ultimart_place_order', array($this, 'handle_order_submission'));
         add_action('admin_menu', array($this, 'register_admin_menu'));
@@ -80,6 +81,42 @@ final class Ultimart_WhatsApp_Catalog {
 
     private function get_price($amount) {
         return number_format_i18n((float) $amount, 0);
+    }
+
+    private function get_discount_percent($price, $old_price) {
+        $price = (float) $price;
+        $old_price = (float) $old_price;
+
+        if ($old_price <= 0 || $old_price <= $price) {
+            return 0;
+        }
+
+        return (int) round((($old_price - $price) / $old_price) * 100);
+    }
+
+    private function get_savings_amount($price, $old_price) {
+        $price = (float) $price;
+        $old_price = (float) $old_price;
+
+        if ($old_price <= $price) {
+            return 0;
+        }
+
+        return $old_price - $price;
+    }
+
+    private function get_video_embed_url($video_url) {
+        $video_url = trim((string) $video_url);
+
+        if (empty($video_url)) {
+            return '';
+        }
+
+        if (preg_match('~(?:youtube\.com/shorts/|youtu\.be/|youtube\.com/watch\?v=|youtube\.com/embed/)([A-Za-z0-9_-]{6,})~', $video_url, $matches)) {
+            return 'https://www.youtube.com/embed/' . $matches[1] . '?autoplay=0&rel=0&modestbranding=1&playsinline=1';
+        }
+
+        return esc_url_raw($video_url);
     }
 
     private function get_orders_table_name() {
@@ -313,8 +350,8 @@ final class Ultimart_WhatsApp_Catalog {
     public function render_product_list_shortcode($atts) {
         $atts = shortcode_atts(
             array(
-                'title' => 'পছন্দের প্রোডাক্ট বেছে নিন',
-                'subtitle' => 'আজকের সেরা কালেকশন থেকে পছন্দের প্রোডাক্ট সিলেক্ট করুন, ডিটেইল দেখুন এবং সাথে সাথে অর্ডার করুন।',
+                'title' => 'কেন আমাদের BIN-BOND WATCH সবার থেকে সেরা?',
+                'subtitle' => 'বিশাল ছাড়, ক্যাশ অন ডেলিভারি, দ্রুত কনফার্মেশন এবং বিশ্বস্ত সাপোর্টের জন্য আজই আপনার পছন্দের মডেলটি অর্ডার করুন।',
                 'detail_page' => '',
                 'button_text' => 'অর্ডার করুন',
             ),
@@ -326,20 +363,59 @@ final class Ultimart_WhatsApp_Catalog {
         $detail_page_url = $this->get_detail_page_url($atts);
 
         wp_enqueue_style('ultimart-whatsapp-catalog');
+        wp_enqueue_script('ultimart-whatsapp-catalog');
 
         ob_start();
         ?>
         <section class="ultimart-list-page">
             <div class="ultimart-list-hero">
-                <span class="ultimart-section-eyebrow">Ultimart BD</span>
-                <h2><?php echo esc_html($atts['title']); ?></h2>
-                <p><?php echo esc_html($atts['subtitle']); ?></p>
+                <div class="ultimart-list-hero__copy">
+                    <span class="ultimart-section-eyebrow">Ultimart BD</span>
+                    <h2><?php echo esc_html($atts['title']); ?></h2>
+                    <p><?php echo esc_html($atts['subtitle']); ?></p>
+
+                    <div class="ultimart-list-hero__metrics">
+                        <div class="ultimart-metric-card">
+                            <strong>4</strong>
+                            <span>ডিরেক্ট অর্ডার প্রোডাক্ট</span>
+                        </div>
+                        <div class="ultimart-metric-card">
+                            <strong>COD</strong>
+                            <span>ক্যাশ অন ডেলিভারি</span>
+                        </div>
+                        <div class="ultimart-metric-card">
+                            <strong>24/7</strong>
+                            <span>হোয়াটসঅ্যাপ সাপোর্ট</span>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="ultimart-list-hero__offer">
+                    <span class="ultimart-list-hero__offer-label">কেন আমাদের কাছে অর্ডার করবেন?</span>
+                    <h3>কারণ আমরা দিচ্ছি বিশাল ছাড়, দ্রুত ডেলিভারি এবং অর্ডারের পর নির্ভরযোগ্য সাপোর্ট।</h3>
+                    <ul class="ultimart-inline-points">
+                        <li>বাজারের তুলনায় সেরা অফার প্রাইস</li>
+                        <li>পণ্য হাতে পেয়ে টাকা দেওয়ার সুবিধা</li>
+                        <li>অর্ডারের পর দ্রুত ফোন/হোয়াটসঅ্যাপ কনফার্মেশন</li>
+                        <li>কাস্টমার সাপোর্ট ও বিশ্বাসযোগ্য সার্ভিস</li>
+                    </ul>
+                </aside>
             </div>
 
-            <div class="ultimart-product-grid">
-                <?php foreach ($products as $product) : ?>
+            <div class="ultimart-trust-strip">
+                <div class="ultimart-trust-pill">ক্যাশ অন ডেলিভারি</div>
+                <div class="ultimart-trust-pill">দ্রুত কনফার্ম</div>
+                <div class="ultimart-trust-pill">গিফট রেডি ফিনিশ</div>
+            </div>
+
+            <div class="ultimart-product-grid" data-product-carousel>
+                <?php foreach ($products as $product_index => $product) : ?>
+                    <?php
+                    $product_url = add_query_arg('ultimart_product', $product['id'], $detail_page_url);
+                    $discount_percent = $this->get_discount_percent($product['price'], $product['old_price']);
+                    $savings_amount = $this->get_savings_amount($product['price'], $product['old_price']);
+                    ?>
                     <article class="ultimart-product-card">
-                        <?php $product_url = add_query_arg('ultimart_product', $product['id'], $detail_page_url); ?>
                         <a
                             class="ultimart-product-card__link"
                             href="<?php echo esc_url($product_url); ?>"
@@ -355,18 +431,74 @@ final class Ultimart_WhatsApp_Catalog {
                             </div>
 
                             <div class="ultimart-product-card__body">
-                                <span class="ultimart-product-card__tag"><?php echo esc_html($product['tag']); ?></span>
+                                <div class="ultimart-product-card__header">
+                                    <span class="ultimart-product-card__tag"><?php echo esc_html($product['tag']); ?></span>
+                                    <?php if ($discount_percent > 0) : ?>
+                                        <span class="ultimart-product-card__save"><?php echo esc_html($discount_percent); ?>% সাশ্রয়</span>
+                                    <?php endif; ?>
+                                </div>
                                 <h3><?php echo esc_html($product['name']); ?></h3>
                                 <p><?php echo esc_html($product['excerpt']); ?></p>
                                 <div class="ultimart-product-card__price">
                                     <strong><?php echo esc_html($this->get_price($product['price'])); ?> &#2547;</strong>
                                     <span><?php echo esc_html($this->get_price($product['old_price'])); ?> &#2547;</span>
                                 </div>
+                                <div class="ultimart-product-card__meta">
+                                    <?php if ($savings_amount > 0) : ?>
+                                        <span>আপনার সাশ্রয় <?php echo esc_html($this->get_price($savings_amount)); ?> &#2547;</span>
+                                    <?php endif; ?>
+                                    <span><?php echo esc_html($product['delivery'][0]); ?></span>
+                                </div>
                                 <span class="ultimart-product-card__cta"><?php echo esc_html($atts['button_text']); ?></span>
                             </div>
                         </a>
                     </article>
                 <?php endforeach; ?>
+            </div>
+            <div class="ultimart-carousel-dots" data-carousel-dots aria-label="প্রোডাক্ট স্লাইড">
+                <?php foreach ($products as $product_index => $product) : ?>
+                    <button
+                        type="button"
+                        class="ultimart-carousel-dot<?php echo 0 === $product_index ? ' is-active' : ''; ?>"
+                        data-carousel-dot="<?php echo esc_attr($product_index); ?>"
+                        aria-label="<?php echo esc_attr(($product_index + 1) . ' নম্বর প্রোডাক্ট দেখুন'); ?>"
+                    ></button>
+                <?php endforeach; ?>
+            </div>
+        </section>
+        <?php
+
+        return ob_get_clean();
+    }
+
+    public function render_campaign_video_shortcode($atts) {
+        $atts = shortcode_atts(
+            array(
+                'video_url' => 'https://youtube.com/shorts/ugawiWnehts?feature=share',
+            ),
+            $atts,
+            'ultimart_campaign_video'
+        );
+
+        $video_embed_url = $this->get_video_embed_url($atts['video_url']);
+
+        if (empty($video_embed_url)) {
+            return '';
+        }
+
+        wp_enqueue_style('ultimart-whatsapp-catalog');
+
+        ob_start();
+        ?>
+        <section class="ultimart-home-video">
+            <div class="ultimart-campaign-video">
+                <iframe
+                    src="<?php echo esc_url($video_embed_url); ?>"
+                    title="BIN-BOND WATCH ভিডিও"
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen
+                ></iframe>
             </div>
         </section>
         <?php
@@ -417,6 +549,8 @@ final class Ultimart_WhatsApp_Catalog {
             'currencySymbol' => html_entity_decode('&#2547;', ENT_QUOTES, 'UTF-8'),
             'product' => $product,
         );
+        $discount_percent = $this->get_discount_percent($product['price'], $product['old_price']);
+        $savings_amount = $this->get_savings_amount($product['price'], $product['old_price']);
 
         ob_start();
         ?>
@@ -427,24 +561,58 @@ final class Ultimart_WhatsApp_Catalog {
                 </a>
             <?php endif; ?>
 
+            <div class="ultimart-trust-strip ultimart-trust-strip--detail">
+                <div class="ultimart-trust-pill">প্রিমিয়াম ঘড়ির ডিটেইল</div>
+                <div class="ultimart-trust-pill">মোবাইলে দ্রুত অর্ডার</div>
+                <div class="ultimart-trust-pill">হোয়াটসঅ্যাপ সাপোর্ট</div>
+            </div>
+
             <div class="ultimart-detail-shell">
                 <div class="ultimart-detail-media-card">
                     <div class="ultimart-detail-media">
                         <img src="<?php echo esc_url($product['image']); ?>" alt="<?php echo esc_attr($product['name']); ?>" />
                     </div>
+
+                    <div class="ultimart-media-highlights">
+                        <?php foreach (array_slice($product['delivery'], 0, 3) as $delivery_point) : ?>
+                            <div class="ultimart-media-highlights__item"><?php echo esc_html($delivery_point); ?></div>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
 
                 <div class="ultimart-detail-info-card">
                     <div class="ultimart-detail-info__top">
-                        <span class="ultimart-product-card__tag"><?php echo esc_html($product['tag']); ?></span>
-                        <span class="ultimart-inline-badge"><?php echo esc_html($product['badge']); ?></span>
+                        <div class="ultimart-detail-topline">
+                            <span class="ultimart-product-card__tag"><?php echo esc_html($product['tag']); ?></span>
+                            <span class="ultimart-inline-badge"><?php echo esc_html($product['badge']); ?></span>
+                        </div>
                         <h2><?php echo esc_html($product['name']); ?></h2>
                         <p><?php echo esc_html($product['excerpt']); ?></p>
                     </div>
 
-                    <div class="ultimart-product-card__price ultimart-detail-price">
-                        <strong><?php echo esc_html($this->get_price($product['price'])); ?> &#2547;</strong>
-                        <span><?php echo esc_html($this->get_price($product['old_price'])); ?> &#2547;</span>
+                    <div class="ultimart-detail-price-panel">
+                        <div class="ultimart-product-card__price ultimart-detail-price">
+                            <strong><?php echo esc_html($this->get_price($product['price'])); ?> &#2547;</strong>
+                            <span><?php echo esc_html($this->get_price($product['old_price'])); ?> &#2547;</span>
+                        </div>
+                        <?php if ($discount_percent > 0) : ?>
+                            <div class="ultimart-detail-price-panel__badge"><?php echo esc_html($discount_percent); ?>% সাশ্রয়</div>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="ultimart-detail-points">
+                        <div class="ultimart-detail-point">
+                            <strong><?php echo esc_html($this->get_price($savings_amount)); ?> &#2547;</strong>
+                            <span>তাৎক্ষণিক সাশ্রয়</span>
+                        </div>
+                        <div class="ultimart-detail-point">
+                            <strong>1 page</strong>
+                            <span>দ্রুত অর্ডার ফ্লো</span>
+                        </div>
+                        <div class="ultimart-detail-point">
+                            <strong>WhatsApp</strong>
+                            <span>ফলোআপ সাপোর্ট</span>
+                        </div>
                     </div>
                     <div class="ultimart-detail-actions">
                         <a class="ultimart-detail-actions__primary" href="#ultimart-order-form">
@@ -478,6 +646,17 @@ final class Ultimart_WhatsApp_Catalog {
                     <h3><?php echo esc_html($product['name']); ?></h3>
                     <p>আজই অর্ডার করুন। সীমিত স্টক, দ্রুত কনফার্মেশনের জন্য নিচের তথ্য পূরণ করুন।</p>
 
+                    <div class="ultimart-summary-cards">
+                        <div class="ultimart-summary-card">
+                            <span class="ultimart-summary-card__label">অফার</span>
+                            <strong><?php echo esc_html($discount_percent); ?>% ছাড়</strong>
+                        </div>
+                        <div class="ultimart-summary-card">
+                            <span class="ultimart-summary-card__label">সাপোর্ট</span>
+                            <strong>হোয়াটসঅ্যাপ রেডি</strong>
+                        </div>
+                    </div>
+
                     <div class="ultimart-order-summary__row">
                         <span>একক দাম</span>
                         <strong data-summary="unit-price"><?php echo esc_html($this->get_price($product['price'])); ?> &#2547;</strong>
@@ -509,6 +688,11 @@ final class Ultimart_WhatsApp_Catalog {
                         <span class="ultimart-section-eyebrow">ডেলিভারি তথ্য</span>
                         <h3>অর্ডার সম্পন্ন করুন</h3>
                         <p>সঠিক নাম, ফোন নাম্বার ও ঠিকানা দিন। আমরা দ্রুত আপনার অর্ডার কনফার্ম করব।</p>
+                    </div>
+
+                    <div class="ultimart-form-note">
+                        <strong>দ্রুত অর্ডার ফর্ম</strong>
+                        <span>একবার তথ্য দিলেই অর্ডার WordPress-এ সেভ হবে এবং চাইলে হোয়াটসঅ্যাপে পাঠানো যাবে।</span>
                     </div>
 
                     <div class="ultimart-order-form__grid">
@@ -549,6 +733,14 @@ final class Ultimart_WhatsApp_Catalog {
 
                     <p class="ultimart-order-form__message" data-form-message></p>
                 </form>
+            </div>
+
+            <div class="ultimart-mobile-order-bar">
+                <div class="ultimart-mobile-order-bar__price">
+                    <span>অর্ডার শুরু</span>
+                    <strong><?php echo esc_html($this->get_price($product['price'])); ?> &#2547;</strong>
+                </div>
+                <a class="ultimart-mobile-order-bar__cta" href="#ultimart-order-form">অর্ডার করুন</a>
             </div>
         </section>
         <?php

@@ -10,8 +10,95 @@
 
     function formatMoney(amount, symbol) {
         var numeric = Number(amount || 0);
-        return numeric.toLocaleString() + " " + symbol;
+        return numeric.toLocaleString("bn-BD") + " " + symbol;
     }
+
+    document.querySelectorAll("[data-product-carousel]").forEach(function (carousel) {
+        var listPage = carousel.closest(".ultimart-list-page");
+        var dots = listPage ? Array.prototype.slice.call(listPage.querySelectorAll("[data-carousel-dot]")) : [];
+        var slides = Array.prototype.slice.call(carousel.querySelectorAll(".ultimart-product-card"));
+        var activeIndex = 0;
+        var autoTimer = null;
+        var userPaused = false;
+
+        if (!slides.length || !dots.length) {
+            return;
+        }
+
+        function setActiveDot(index) {
+            activeIndex = index;
+            dots.forEach(function (dot, dotIndex) {
+                dot.classList.toggle("is-active", dotIndex === index);
+            });
+        }
+
+        function goToSlide(index, smooth) {
+            var nextIndex = (index + slides.length) % slides.length;
+
+            carousel.scrollTo({
+                left: slides[nextIndex].offsetLeft,
+                behavior: smooth === false ? "auto" : "smooth"
+            });
+            setActiveDot(nextIndex);
+        }
+
+        function startAutoPlay() {
+            if (slides.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+                return;
+            }
+
+            window.clearInterval(autoTimer);
+            autoTimer = window.setInterval(function () {
+                if (!userPaused && carousel.matches(":hover") === false) {
+                    goToSlide(activeIndex + 1);
+                }
+            }, 3200);
+        }
+
+        function pauseAutoPlayBriefly() {
+            userPaused = true;
+            window.setTimeout(function () {
+                userPaused = false;
+            }, 6500);
+        }
+
+        function getActiveIndex() {
+            var center = carousel.scrollLeft + (carousel.clientWidth / 2);
+            var closestIndex = 0;
+            var closestDistance = Infinity;
+
+            slides.forEach(function (slide, index) {
+                var slideCenter = slide.offsetLeft + (slide.offsetWidth / 2);
+                var distance = Math.abs(slideCenter - center);
+
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestIndex = index;
+                }
+            });
+
+            return closestIndex;
+        }
+
+        dots.forEach(function (dot, index) {
+            dot.addEventListener("click", function () {
+                pauseAutoPlayBriefly();
+                goToSlide(index);
+            });
+        });
+
+        carousel.addEventListener("scroll", function () {
+            window.requestAnimationFrame(function () {
+                setActiveDot(getActiveIndex());
+            });
+        }, { passive: true });
+
+        ["touchstart", "pointerdown", "wheel"].forEach(function (eventName) {
+            carousel.addEventListener(eventName, pauseAutoPlayBriefly, { passive: true });
+        });
+
+        startAutoPlay();
+    });
 
     document.querySelectorAll("[data-product-detail]").forEach(function (section) {
         var payload = JSON.parse(section.getAttribute("data-product-detail") || "{}");

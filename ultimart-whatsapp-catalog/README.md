@@ -23,6 +23,22 @@ Example:
 - If your detail page slug is `order`
 - Then use `detail_page="/order"`
 
+### Home page video
+
+Put this shortcode at the start of the Home page only:
+
+```text
+[ultimart_campaign_video]
+```
+
+To use a different video:
+
+```text
+[ultimart_campaign_video video_url="https://youtube.com/shorts/ugawiWnehts?feature=share"]
+```
+
+Do not put this video shortcode on the Shop page if you want video only on Home.
+
 ### Product detail page
 
 ```text
@@ -108,3 +124,22 @@ Orders are stored in a custom database table created by the plugin.
 To see saved orders:
 
 - `WordPress Admin > আল্টিমার্ট অর্ডার`
+
+## Header and footer update
+
+This plugin controls only the product/order shortcode area. The site header and
+footer usually come from your WordPress theme or page builder.
+
+Common ways to update them:
+
+1. `WordPress Admin > Appearance > Customize`
+2. `WordPress Admin > Appearance > Editor` for block themes
+3. `WordPress Admin > Templates / Elementor / Header Footer Builder` if the site uses Elementor or a builder plugin
+4. Edit the WordPress page content if the header/footer is manually placed inside the page
+
+For this plugin's campaign text:
+
+- Main list heading/subtitle is in `ultimart-whatsapp-catalog.php`
+- Product names, prices, features, delivery text are inside `get_products()`
+- Design and mobile carousel styles are in `assets/style.css`
+- Carousel autoplay is in `assets/app.js`

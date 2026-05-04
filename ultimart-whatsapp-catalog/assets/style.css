@@ -1,15 +1,18 @@
 :root {
-    --ultimart-bg: #f4eadc;
-    --ultimart-panel: #fffaf4;
-    --ultimart-ink: #1b1511;
-    --ultimart-muted: #6d6258;
-    --ultimart-line: rgba(102, 79, 57, 0.16);
-    --ultimart-gold: #9f7240;
-    --ultimart-gold-dark: #6c4924;
-    --ultimart-brown: #241c17;
+    --ultimart-bg: #f3eadf;
+    --ultimart-panel: rgba(255, 250, 244, 0.92);
+    --ultimart-panel-strong: #fffdf9;
+    --ultimart-ink: #1d1712;
+    --ultimart-muted: #6d635a;
+    --ultimart-line: rgba(101, 77, 51, 0.16);
+    --ultimart-line-strong: rgba(101, 77, 51, 0.28);
+    --ultimart-gold: #bb8a52;
+    --ultimart-gold-dark: #6a4827;
+    --ultimart-brown: #231914;
     --ultimart-green: #1f7a4f;
     --ultimart-red: #bb463d;
-    --ultimart-shadow: 0 24px 60px rgba(32, 20, 11, 0.1);
+    --ultimart-shadow: 0 28px 70px rgba(27, 18, 10, 0.11);
+    --ultimart-soft-shadow: 0 18px 44px rgba(27, 18, 10, 0.08);
 }
 
 .ultimart-list-page,
@@ -21,24 +24,233 @@
     box-sizing: border-box;
 }
 
+.ultimart-list-page a,
+.ultimart-detail-page a,
+.ultimart-empty-state a,
+.ultimart-home-video a,
+.ultimart-list-page a:hover,
+.ultimart-detail-page a:hover,
+.ultimart-empty-state a:hover,
+.ultimart-home-video a:hover,
+.ultimart-list-page a:focus,
+.ultimart-detail-page a:focus,
+.ultimart-empty-state a:focus,
+.ultimart-home-video a:focus {
+    text-decoration: none;
+    text-decoration-line: none;
+}
+
 .ultimart-list-page,
 .ultimart-detail-page,
 .ultimart-empty-state {
     background:
-        radial-gradient(circle at top left, rgba(159, 114, 64, 0.18), transparent 24%),
-        linear-gradient(180deg, #fcf7f0 0%, var(--ultimart-bg) 100%);
+        radial-gradient(circle at top left, rgba(187, 138, 82, 0.23), transparent 28%),
+        radial-gradient(circle at top right, rgba(70, 53, 38, 0.08), transparent 22%),
+        linear-gradient(180deg, #fffaf3 0%, var(--ultimart-bg) 100%);
     border: 1px solid var(--ultimart-line);
-    border-radius: 28px;
+    border-radius: 30px;
     box-shadow: var(--ultimart-shadow);
     color: var(--ultimart-ink);
     margin: 24px 0;
-    padding: 24px;
+    overflow: hidden;
+    padding: 28px;
+    position: relative;
+}
+
+.ultimart-list-page::before,
+.ultimart-detail-page::before,
+.ultimart-empty-state::before {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.44), transparent);
+    content: "";
+    height: 1px;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
 }
 
 .ultimart-list-hero,
 .ultimart-order-form__head,
 .ultimart-detail-info__top {
     margin-bottom: 22px;
+}
+
+.ultimart-campaign-video {
+    background: #000;
+    border: 2px solid #111827;
+    border-radius: 14px;
+    box-shadow: var(--ultimart-soft-shadow);
+    margin: 0 0 20px;
+    overflow: hidden;
+}
+
+.ultimart-campaign-video iframe {
+    aspect-ratio: 9 / 16;
+    border: 0;
+    display: block;
+    margin: 0 auto;
+    max-height: 760px;
+    width: min(100%, 460px);
+}
+
+.ultimart-home-video {
+    margin: 0 0 18px;
+}
+
+.ultimart-list-hero {
+    align-items: stretch;
+    display: grid;
+    gap: 18px;
+    grid-template-columns: minmax(0, 1.35fr) minmax(290px, 0.65fr);
+    margin-bottom: 18px;
+}
+
+.ultimart-list-hero__copy,
+.ultimart-list-hero__offer,
+.ultimart-detail-media-card,
+.ultimart-detail-info-card,
+.ultimart-order-summary,
+.ultimart-order-form {
+    background: var(--ultimart-panel);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(101, 77, 51, 0.12);
+    border-radius: 26px;
+    box-shadow: var(--ultimart-soft-shadow);
+    min-width: 0;
+    padding: 22px;
+}
+
+.ultimart-list-hero__copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.ultimart-list-hero__offer {
+    background:
+        linear-gradient(180deg, rgba(34, 25, 20, 0.96), rgba(87, 60, 31, 0.92)),
+        #231914;
+    color: #fff8f0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    justify-content: center;
+}
+
+.ultimart-list-hero__offer h3 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 32px;
+    letter-spacing: 0;
+    line-height: 1.05;
+    margin: 0;
+}
+
+.ultimart-list-hero__offer-label {
+    color: rgba(255, 240, 222, 0.74);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.ultimart-list-hero__metrics,
+.ultimart-detail-points,
+.ultimart-summary-cards {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.ultimart-metric-card,
+.ultimart-detail-point,
+.ultimart-summary-card {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(101, 77, 51, 0.12);
+    border-radius: 18px;
+    min-width: 0;
+    padding: 14px 16px;
+}
+
+.ultimart-metric-card strong,
+.ultimart-detail-point strong,
+.ultimart-summary-card strong {
+    color: var(--ultimart-brown);
+    display: block;
+    font-size: 22px;
+    line-height: 1.05;
+}
+
+.ultimart-metric-card span,
+.ultimart-detail-point span,
+.ultimart-summary-card__label {
+    color: var(--ultimart-muted);
+    display: block;
+    font-size: 12px;
+    line-height: 1.45;
+    margin-top: 6px;
+    text-transform: uppercase;
+}
+
+.ultimart-summary-card {
+    background: rgba(255, 255, 255, 0.52);
+}
+
+.ultimart-summary-card strong {
+    font-size: 18px;
+}
+
+.ultimart-inline-points,
+.ultimart-media-highlights {
+    display: grid;
+    gap: 10px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.ultimart-inline-points li,
+.ultimart-media-highlights__item {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+    line-height: 1.5;
+}
+
+.ultimart-inline-points li::before,
+.ultimart-media-highlights__item::before {
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    color: inherit;
+    content: "•";
+    display: inline-flex;
+    flex: 0 0 auto;
+    height: 24px;
+    justify-content: center;
+    width: 24px;
+}
+
+.ultimart-trust-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.ultimart-trust-strip--detail {
+    margin-bottom: 22px;
+}
+
+.ultimart-trust-pill {
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(101, 77, 51, 0.12);
+    border-radius: 999px;
+    color: var(--ultimart-brown);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 10px 14px;
+    text-transform: uppercase;
 }
 
 .ultimart-section-eyebrow {
@@ -57,14 +269,14 @@
 .ultimart-order-form__head h3,
 .ultimart-empty-state h2 {
     font-family: Georgia, "Times New Roman", serif;
-    letter-spacing: -0.03em;
+    letter-spacing: 0;
     margin: 0 0 12px;
 }
 
 .ultimart-list-hero h2,
 .ultimart-detail-info__top h2 {
-    font-size: clamp(30px, 4vw, 50px);
-    line-height: 1;
+    font-size: 48px;
+    line-height: 0.98;
 }
 
 .ultimart-list-hero p,
@@ -75,33 +287,35 @@
 .ultimart-detail-block p,
 .ultimart-detail-block li,
 .ultimart-field input,
-.ultimart-field textarea {
+.ultimart-field textarea,
+.ultimart-form-note span {
     color: var(--ultimart-muted);
     font-size: 15px;
-    line-height: 1.7;
+    line-height: 1.72;
 }
 
 .ultimart-product-grid {
     display: grid;
     gap: 20px;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .ultimart-product-card {
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(102, 79, 57, 0.1);
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(101, 77, 51, 0.1);
     border-radius: 24px;
-    box-shadow: 0 18px 40px rgba(30, 20, 12, 0.08);
+    box-shadow: var(--ultimart-soft-shadow);
     display: flex;
     height: 100%;
     overflow: hidden;
-    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
 }
 
 .ultimart-product-card:hover,
 .ultimart-product-card:focus-within {
-    box-shadow: 0 26px 50px rgba(30, 20, 12, 0.12);
-    transform: translateY(-3px);
+    border-color: rgba(187, 138, 82, 0.32);
+    box-shadow: 0 24px 52px rgba(27, 18, 10, 0.12);
+    transform: translateY(-4px);
 }
 
 .ultimart-product-card__link {
@@ -109,15 +323,27 @@
     display: flex;
     flex: 1 1 auto;
     flex-direction: column;
+    min-width: 0;
     text-decoration: none;
 }
 
 .ultimart-product-card__media,
 .ultimart-detail-media {
     aspect-ratio: 1 / 1;
-    background: #efe5d8;
+    background:
+        radial-gradient(circle at top, rgba(255, 255, 255, 0.44), transparent 40%),
+        linear-gradient(160deg, #f1e6d8, #e7d6c2);
     overflow: hidden;
     position: relative;
+}
+
+.ultimart-product-card__media::after,
+.ultimart-detail-media::after {
+    background: linear-gradient(180deg, transparent 40%, rgba(18, 12, 7, 0.12));
+    content: "";
+    inset: 0;
+    pointer-events: none;
+    position: absolute;
 }
 
 .ultimart-product-card__media img,
@@ -130,7 +356,7 @@
 
 .ultimart-product-card__badge,
 .ultimart-inline-badge {
-    background: rgba(36, 28, 23, 0.86);
+    background: rgba(36, 28, 23, 0.88);
     border-radius: 999px;
     color: #fff;
     display: inline-block;
@@ -145,14 +371,24 @@
     left: 14px;
     position: absolute;
     top: 14px;
+    z-index: 1;
 }
 
 .ultimart-product-card__body {
     display: flex;
-    flex-direction: column;
     flex: 1 1 auto;
+    flex-direction: column;
     gap: 12px;
-    padding: 18px;
+    min-width: 0;
+    padding: 20px;
+}
+
+.ultimart-product-card__header,
+.ultimart-detail-topline {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .ultimart-product-card__tag {
@@ -163,22 +399,36 @@
     text-transform: uppercase;
 }
 
+.ultimart-product-card__save {
+    background: rgba(187, 138, 82, 0.12);
+    border: 1px solid rgba(187, 138, 82, 0.2);
+    border-radius: 999px;
+    color: var(--ultimart-gold-dark);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 6px 10px;
+    text-transform: uppercase;
+}
+
 .ultimart-product-card__body h3 {
-    font-size: 24px;
-    line-height: 1.12;
+    font-size: 26px;
+    line-height: 1.1;
     margin: 0;
 }
 
-.ultimart-product-card__price {
+.ultimart-product-card__price,
+.ultimart-detail-price {
     align-items: baseline;
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
 }
 
 .ultimart-product-card__price strong,
 .ultimart-order-summary__row strong {
     color: var(--ultimart-brown);
-    font-size: 26px;
+    font-size: 28px;
     line-height: 1;
 }
 
@@ -188,18 +438,32 @@
     text-decoration: line-through;
 }
 
+.ultimart-product-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.ultimart-product-card__meta span {
+    background: rgba(243, 234, 223, 0.92);
+    border-radius: 999px;
+    color: var(--ultimart-muted);
+    font-size: 12px;
+    padding: 7px 10px;
+}
+
 .ultimart-product-card__cta {
     align-items: center;
-    background: rgba(159, 114, 64, 0.1);
-    border: 1px solid rgba(159, 114, 64, 0.18);
+    background: linear-gradient(135deg, var(--ultimart-brown) 0%, var(--ultimart-gold-dark) 100%);
+    border: 1px solid rgba(35, 25, 20, 0.04);
     border-radius: 16px;
-    color: var(--ultimart-gold-dark);
+    color: #fff;
     display: inline-flex;
     font-size: 14px;
     font-weight: 700;
     justify-content: center;
     margin-top: auto;
-    min-height: 52px;
+    min-height: 54px;
     padding: 0 16px;
     text-align: center;
     width: 100%;
@@ -228,49 +492,61 @@
 }
 
 .ultimart-detail-shell {
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
     margin-bottom: 24px;
 }
 
 .ultimart-order-shell {
-    grid-template-columns: minmax(280px, 0.72fr) minmax(0, 1.28fr);
-}
-
-.ultimart-detail-media-card,
-.ultimart-detail-info-card,
-.ultimart-order-summary,
-.ultimart-order-form {
-    background: rgba(255, 255, 255, 0.88);
-    border: 1px solid rgba(102, 79, 57, 0.1);
-    border-radius: 24px;
-    box-shadow: 0 18px 40px rgba(30, 20, 12, 0.08);
-    min-width: 0;
-    max-width: 100%;
-    padding: 18px;
+    align-items: start;
+    grid-template-columns: minmax(280px, 0.74fr) minmax(0, 1.26fr);
 }
 
 .ultimart-inline-badge {
-    margin-left: 10px;
+    margin-left: 0;
+}
+
+.ultimart-detail-price-panel {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 18px;
 }
 
 .ultimart-detail-price {
-    margin-bottom: 18px;
+    margin-bottom: 0;
+}
+
+.ultimart-detail-price-panel__badge {
+    background: linear-gradient(135deg, rgba(187, 138, 82, 0.18), rgba(106, 72, 39, 0.16));
+    border: 1px solid rgba(187, 138, 82, 0.18);
+    border-radius: 999px;
+    color: var(--ultimart-gold-dark);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    padding: 10px 12px;
+    text-transform: uppercase;
+}
+
+.ultimart-detail-point {
+    background: rgba(243, 234, 223, 0.64);
 }
 
 .ultimart-detail-actions {
-    margin-bottom: 18px;
+    margin: 18px 0 22px;
 }
 
 .ultimart-detail-actions__primary {
     align-items: center;
     background: linear-gradient(135deg, var(--ultimart-brown) 0%, var(--ultimart-gold-dark) 100%);
-    border-radius: 16px;
+    border-radius: 18px;
     color: #fff;
     display: inline-flex;
     font-size: 15px;
     font-weight: 700;
     justify-content: center;
-    min-height: 54px;
+    min-height: 56px;
     padding: 0 20px;
     text-align: center;
     text-decoration: none;
@@ -281,6 +557,14 @@
     display: grid;
     gap: 18px;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.ultimart-detail-block {
+    background: rgba(255, 255, 255, 0.56);
+    border: 1px solid rgba(101, 77, 51, 0.1);
+    border-radius: 20px;
+    min-width: 0;
+    padding: 18px;
 }
 
 .ultimart-detail-block h3,
@@ -300,10 +584,29 @@
     padding-left: 18px;
 }
 
+.ultimart-media-highlights {
+    margin-top: 16px;
+}
+
+.ultimart-media-highlights__item {
+    background: rgba(243, 234, 223, 0.72);
+    border: 1px solid rgba(101, 77, 51, 0.1);
+    border-radius: 18px;
+    color: var(--ultimart-brown);
+    padding: 12px 14px;
+}
+
+.ultimart-media-highlights__item::before {
+    background: rgba(106, 72, 39, 0.1);
+    border-color: rgba(106, 72, 39, 0.12);
+}
+
 .ultimart-order-summary {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    position: sticky;
+    top: 24px;
 }
 
 .ultimart-order-summary h3 {
@@ -323,12 +626,12 @@
     display: inline-flex;
     gap: 8px;
     min-width: 0;
-    max-width: 100%;
+    width: auto;
 }
 
 .ultimart-qty__btn {
     background: #fff;
-    border: 1px solid rgba(102, 79, 57, 0.18);
+    border: 1px solid rgba(101, 77, 51, 0.18);
     border-radius: 14px;
     color: var(--ultimart-ink);
     cursor: pointer;
@@ -339,7 +642,7 @@
 
 .ultimart-qty input {
     background: #fff;
-    border: 1px solid rgba(102, 79, 57, 0.18);
+    border: 1px solid rgba(101, 77, 51, 0.18);
     border-radius: 14px;
     color: var(--ultimart-ink);
     font-size: 18px;
@@ -350,8 +653,32 @@
 }
 
 .ultimart-order-summary__total {
-    border-top: 1px solid rgba(102, 79, 57, 0.12);
-    padding-top: 14px;
+    background: rgba(243, 234, 223, 0.64);
+    border-radius: 18px;
+    padding: 16px;
+}
+
+.ultimart-order-summary__total strong {
+    font-size: 32px;
+}
+
+.ultimart-order-form {
+    scroll-margin: 24px 0 90px;
+}
+
+.ultimart-form-note {
+    background: rgba(243, 234, 223, 0.6);
+    border: 1px solid rgba(101, 77, 51, 0.1);
+    border-radius: 18px;
+    margin-bottom: 16px;
+    padding: 14px 16px;
+}
+
+.ultimart-form-note strong {
+    color: var(--ultimart-brown);
+    display: block;
+    font-size: 15px;
+    margin-bottom: 4px;
 }
 
 .ultimart-order-form__grid {
@@ -378,7 +705,7 @@
 .ultimart-field input,
 .ultimart-field textarea {
     background: #fff;
-    border: 1px solid rgba(102, 79, 57, 0.16);
+    border: 1px solid rgba(101, 77, 51, 0.16);
     border-radius: 16px;
     color: var(--ultimart-ink);
     padding: 14px 15px;
@@ -399,7 +726,8 @@
 }
 
 .ultimart-order-form__submit,
-.ultimart-order-form__whatsapp {
+.ultimart-order-form__whatsapp,
+.ultimart-mobile-order-bar__cta {
     align-items: center;
     border-radius: 16px;
     display: inline-flex;
@@ -411,10 +739,14 @@
     text-decoration: none;
 }
 
-.ultimart-order-form__submit {
+.ultimart-order-form__submit,
+.ultimart-mobile-order-bar__cta {
     background: linear-gradient(135deg, var(--ultimart-brown) 0%, var(--ultimart-gold-dark) 100%);
     border: 0;
     color: #fff;
+}
+
+.ultimart-order-form__submit {
     cursor: pointer;
     min-width: 180px;
 }
@@ -445,30 +777,33 @@
     color: var(--ultimart-red);
 }
 
-.ultimart-order-form {
-    scroll-margin-top: 24px;
+.ultimart-mobile-order-bar {
+    display: none;
 }
 
 .ultimart-product-card__link:focus-visible,
 .ultimart-detail-actions__primary:focus-visible,
 .ultimart-order-form__submit:focus-visible,
 .ultimart-order-form__whatsapp:focus-visible,
+.ultimart-mobile-order-bar__cta:focus-visible,
 .ultimart-qty__btn:focus-visible {
-    outline: 2px solid rgba(159, 114, 64, 0.5);
+    outline: 2px solid rgba(187, 138, 82, 0.56);
     outline-offset: 3px;
 }
 
-@media (min-width: 761px) {
-    .ultimart-product-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+@media (max-width: 1120px) {
+    .ultimart-list-hero {
+        grid-template-columns: 1fr;
     }
-}
 
-@media (max-width: 980px) {
     .ultimart-detail-shell,
     .ultimart-order-shell,
     .ultimart-detail-columns {
         grid-template-columns: 1fr;
+    }
+
+    .ultimart-order-summary {
+        position: static;
     }
 }
 
@@ -480,10 +815,16 @@
         border: 0;
         border-radius: 0;
         box-shadow: none;
-        margin: 0 calc(50% - 50vw) 16px;
-        max-width: 100vw;
+        margin: 0;
+        max-width: 100%;
         overflow-x: clip;
-        padding: 0 6px 16px;
+        padding: 0 8px 88px;
+    }
+
+    .ultimart-list-page::before,
+    .ultimart-detail-page::before,
+    .ultimart-empty-state::before {
+        display: none;
     }
 
     .ultimart-list-hero,
@@ -492,8 +833,35 @@
         margin-bottom: 14px;
     }
 
+    .ultimart-campaign-video {
+        border-left: 0;
+        border-radius: 0;
+        border-right: 0;
+        margin: 0;
+    }
+
+    .ultimart-campaign-video iframe {
+        max-height: none;
+        width: 100%;
+    }
+
+    .ultimart-home-video {
+        margin: 0;
+    }
+
     .ultimart-list-hero {
-        padding: 10px 2px 0;
+        gap: 12px;
+        padding-top: 6px;
+    }
+
+    .ultimart-list-hero__copy,
+    .ultimart-list-hero__offer,
+    .ultimart-detail-media-card,
+    .ultimart-detail-info-card,
+    .ultimart-order-summary,
+    .ultimart-order-form {
+        border-radius: 20px;
+        padding: 16px;
     }
 
     .ultimart-section-eyebrow {
@@ -502,13 +870,9 @@
         margin-bottom: 6px;
     }
 
-    .ultimart-order-form__grid {
-        grid-template-columns: 1fr;
-    }
-
     .ultimart-list-hero h2,
     .ultimart-detail-info__top h2 {
-        font-size: 26px;
+        font-size: 28px;
     }
 
     .ultimart-list-hero p,
@@ -519,40 +883,49 @@
     .ultimart-detail-block p,
     .ultimart-detail-block li,
     .ultimart-field input,
-    .ultimart-field textarea {
+    .ultimart-field textarea,
+    .ultimart-form-note span {
         font-size: 13px;
-        line-height: 1.55;
+        line-height: 1.58;
+    }
+
+    .ultimart-list-hero__metrics,
+    .ultimart-detail-points,
+    .ultimart-summary-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .ultimart-trust-strip {
+        gap: 8px;
+    }
+
+    .ultimart-trust-pill {
+        font-size: 10px;
+        letter-spacing: 0.06em;
+        padding: 8px 11px;
     }
 
     .ultimart-product-grid {
-        gap: 8px;
+        gap: 10px;
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .ultimart-product-card {
-        border-radius: 16px;
-        box-shadow: 0 8px 18px rgba(30, 20, 12, 0.07);
-    }
-
-    .ultimart-product-card__media {
-        aspect-ratio: 1.04 / 1;
-    }
-
-    .ultimart-product-card__badge,
-    .ultimart-inline-badge {
-        font-size: 9px;
-        letter-spacing: 0.08em;
-        padding: 6px 9px;
-    }
-
-    .ultimart-product-card__badge {
-        left: 8px;
-        top: 8px;
+        border-radius: 18px;
+        box-shadow: 0 10px 24px rgba(27, 18, 10, 0.08);
     }
 
     .ultimart-product-card__body {
-        gap: 6px;
-        padding: 8px;
+        gap: 8px;
+        padding: 12px;
+    }
+
+    .ultimart-product-card__badge,
+    .ultimart-inline-badge,
+    .ultimart-product-card__save {
+        font-size: 9px;
+        letter-spacing: 0.06em;
+        padding: 5px 8px;
     }
 
     .ultimart-product-card__tag {
@@ -562,7 +935,7 @@
 
     .ultimart-product-card__body h3 {
         display: -webkit-box;
-        font-size: 14px;
+        font-size: 15px;
         line-height: 1.2;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
@@ -571,10 +944,8 @@
 
     .ultimart-product-card__body p {
         display: -webkit-box;
-        font-size: 11px;
-        line-height: 1.35;
         -webkit-box-orient: vertical;
-        -webkit-line-clamp: 1;
+        -webkit-line-clamp: 2;
         overflow: hidden;
     }
 
@@ -582,35 +953,28 @@
         gap: 5px;
     }
 
-    .ultimart-product-card__body,
-    .ultimart-detail-media-card,
-    .ultimart-detail-info-card,
-    .ultimart-order-summary,
-    .ultimart-order-form {
-        padding: 14px;
-    }
-
-    .ultimart-detail-media-card,
-    .ultimart-detail-info-card,
-    .ultimart-order-summary,
-    .ultimart-order-form {
-        border-radius: 18px;
-        box-shadow: 0 12px 28px rgba(30, 20, 12, 0.08);
-    }
-
     .ultimart-product-card__price strong,
     .ultimart-order-summary__row strong {
-        font-size: 17px;
+        font-size: 18px;
     }
 
     .ultimart-product-card__price span {
+        font-size: 11px;
+    }
+
+    .ultimart-product-card__meta {
+        gap: 6px;
+    }
+
+    .ultimart-product-card__meta span {
         font-size: 10px;
+        padding: 6px 8px;
     }
 
     .ultimart-product-card__cta {
-        border-radius: 10px;
+        border-radius: 12px;
         font-size: 11px;
-        min-height: 34px;
+        min-height: 36px;
         padding: 0 8px;
     }
 
@@ -625,6 +989,21 @@
         gap: 14px;
     }
 
+    .ultimart-detail-block {
+        padding: 14px;
+    }
+
+    .ultimart-detail-actions {
+        margin: 16px 0 18px;
+    }
+
+    .ultimart-detail-actions__primary,
+    .ultimart-order-form__submit,
+    .ultimart-order-form__whatsapp,
+    .ultimart-mobile-order-bar__cta {
+        min-height: 50px;
+    }
+
     .ultimart-order-summary__row,
     .ultimart-order-summary__qty {
         align-items: stretch;
@@ -636,36 +1015,654 @@
         width: 100%;
     }
 
+    .ultimart-qty {
+        justify-content: space-between;
+    }
+
     .ultimart-qty__btn {
         height: 42px;
         width: 42px;
     }
 
     .ultimart-qty input {
+        flex: 1 1 auto;
         font-size: 16px;
         height: 42px;
-        min-width: 0;
+        width: auto;
     }
-}
 
-@media (max-width: 480px) {
+    .ultimart-order-form__grid {
+        grid-template-columns: 1fr;
+    }
+
     .ultimart-order-form__actions {
         align-items: stretch;
         flex-direction: column;
     }
 
-    .ultimart-qty {
-        justify-content: space-between;
+    .ultimart-order-form__submit,
+    .ultimart-order-form__whatsapp {
         width: 100%;
     }
 
-    .ultimart-qty input {
-        flex: 1 1 auto;
-        width: auto;
+    .ultimart-mobile-order-bar {
+        align-items: center;
+        background: rgba(24, 17, 12, 0.94);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        bottom: 10px;
+        box-shadow: 0 18px 42px rgba(16, 11, 8, 0.3);
+        display: flex;
+        gap: 12px;
+        left: 10px;
+        padding: 10px;
+        position: fixed;
+        right: 10px;
+        z-index: 40;
     }
 
+    .ultimart-mobile-order-bar__price {
+        color: #f7efe4;
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .ultimart-mobile-order-bar__price span {
+        color: rgba(247, 239, 228, 0.72);
+        display: block;
+        font-size: 11px;
+        line-height: 1.2;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+    }
+
+    .ultimart-mobile-order-bar__price strong {
+        display: block;
+        font-size: 20px;
+        line-height: 1;
+    }
+
+    .ultimart-mobile-order-bar__cta {
+        flex: 0 0 auto;
+        min-width: 128px;
+    }
+}
+
+@media (max-width: 420px) {
+    .ultimart-product-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ultimart-mobile-order-bar__cta {
+        min-width: 110px;
+        padding: 0 16px;
+    }
+}
+
+/* Mobile campaign redesign: full-width carousel with larger Bangla sales text. */
+.ultimart-list-page,
+.ultimart-detail-page,
+.ultimart-empty-state {
+    background:
+        linear-gradient(180deg, #ffffff 0%, #eef3ff 48%, #ffffff 100%);
+    border-color: rgba(9, 15, 28, 0.12);
+}
+
+.ultimart-list-hero h2,
+.ultimart-detail-info__top h2,
+.ultimart-order-summary h3,
+.ultimart-order-form__head h3,
+.ultimart-empty-state h2,
+.ultimart-list-hero__offer h3 {
+    font-family: Arial, Helvetica, sans-serif;
+    letter-spacing: 0;
+}
+
+.ultimart-list-hero h2 {
+    color: #07090f;
+    font-size: 48px;
+    font-weight: 900;
+    line-height: 1.08;
+    text-align: center;
+}
+
+.ultimart-list-hero h2 strong,
+.ultimart-list-hero h2 b,
+.ultimart-list-hero p strong,
+.ultimart-list-hero p b,
+.ultimart-list-hero__offer-label,
+.ultimart-inline-points li:nth-child(1),
+.ultimart-inline-points li:nth-child(2) {
+    color: #e8243f;
+}
+
+.ultimart-list-hero p {
+    color: #111827;
+    font-weight: 800;
+}
+
+.ultimart-list-hero__offer .ultimart-list-hero__offer-label,
+.ultimart-list-hero__offer .ultimart-inline-points li:nth-child(1),
+.ultimart-list-hero__offer .ultimart-inline-points li:nth-child(2) {
+    color: #ffe1e6;
+}
+
+.ultimart-list-hero h2::after {
+    content: none;
+    display: none;
+}
+
+.ultimart-section-eyebrow,
+.ultimart-product-card__tag,
+.ultimart-trust-pill,
+.ultimart-list-hero__offer-label,
+.ultimart-summary-card__label,
+.ultimart-field span {
+    letter-spacing: 0;
+}
+
+.ultimart-list-hero__copy,
+.ultimart-list-hero__offer,
+.ultimart-detail-media-card,
+.ultimart-detail-info-card,
+.ultimart-order-summary,
+.ultimart-order-form,
+.ultimart-product-card {
+    border-color: #111827;
+    border-radius: 12px;
+}
+
+.ultimart-list-hero__offer,
+.ultimart-product-card__cta,
+.ultimart-detail-actions__primary,
+.ultimart-order-form__submit,
+.ultimart-mobile-order-bar__cta {
+    background: #e8243f;
+    color: #ffffff;
+}
+
+.ultimart-list-hero__offer {
+    box-shadow: 0 18px 34px rgba(232, 36, 63, 0.18);
+}
+
+.ultimart-trust-pill,
+.ultimart-product-card__save,
+.ultimart-detail-price-panel__badge {
+    background: #fff3f5;
+    border-color: rgba(232, 36, 63, 0.2);
+    color: #e8243f;
+}
+
+.ultimart-product-card__media,
+.ultimart-detail-media {
+    background: #ffffff;
+    border: 2px solid #111827;
+    border-radius: 12px;
+}
+
+.ultimart-product-card__media img,
+.ultimart-detail-media img {
+    transform: scale(1.02);
+    transition: transform 0.35s ease;
+}
+
+.ultimart-product-card:hover .ultimart-product-card__media img {
+    transform: scale(1.07);
+}
+
+.ultimart-product-card {
+    animation: ultimart-card-rise 0.55s ease both;
+}
+
+.ultimart-product-card:nth-child(2) {
+    animation-delay: 0.08s;
+}
+
+.ultimart-product-card:nth-child(3) {
+    animation-delay: 0.16s;
+}
+
+.ultimart-product-card:nth-child(4) {
+    animation-delay: 0.24s;
+}
+
+.ultimart-product-card__badge,
+.ultimart-inline-badge {
+    background: #111827;
+}
+
+.ultimart-product-card__price strong,
+.ultimart-order-summary__row strong {
+    color: #e8243f;
+    font-weight: 900;
+}
+
+.ultimart-carousel-dots {
+    display: none;
+}
+
+@keyframes ultimart-card-rise {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes ultimart-pulse {
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(232, 36, 63, 0.36);
+    }
+
+    50% {
+        box-shadow: 0 0 0 10px rgba(232, 36, 63, 0);
+    }
+}
+
+@media (max-width: 760px) {
+    .ultimart-list-page,
+    .ultimart-detail-page,
+    .ultimart-empty-state {
+        background: #eef3ff;
+        margin: 0;
+        padding: 0 0 96px;
+        width: 100%;
+    }
+
+    .ultimart-list-hero {
+        background: #ffffff;
+        gap: 0;
+        margin: 0;
+        padding: 22px 12px 18px;
+    }
+
+    .ultimart-list-hero__copy,
+    .ultimart-list-hero__offer {
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+        padding: 0;
+    }
+
+    .ultimart-list-hero__offer {
+        background: #111827;
+        border-radius: 12px;
+        margin-top: 18px;
+        padding: 16px;
+    }
+
+    .ultimart-list-hero h2 {
+        font-size: 34px;
+        line-height: 1.14;
+        margin-bottom: 12px;
+    }
+
+    .ultimart-list-hero p {
+        color: #111827;
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 1.55;
+        text-align: center;
+    }
+
+    .ultimart-list-hero__metrics {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        margin-top: 16px;
+    }
+
+    .ultimart-metric-card {
+        border-color: rgba(17, 24, 39, 0.18);
+        border-radius: 10px;
+        padding: 10px 8px;
+        text-align: center;
+    }
+
+    .ultimart-metric-card strong {
+        font-size: 24px;
+        font-weight: 900;
+    }
+
+    .ultimart-metric-card span {
+        font-size: 12px;
+        font-weight: 800;
+        line-height: 1.3;
+    }
+
+    .ultimart-trust-strip {
+        background: #eef3ff;
+        gap: 8px;
+        margin: 0;
+        padding: 14px 8px;
+    }
+
+    .ultimart-trust-pill {
+        flex: 1 1 auto;
+        font-size: 13px;
+        font-weight: 900;
+        justify-content: center;
+        padding: 10px 8px;
+        text-align: center;
+    }
+
+    .ultimart-product-grid {
+        display: flex;
+        gap: 0;
+        grid-template-columns: none;
+        margin: 0;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        width: 100%;
+    }
+
+    .ultimart-product-grid::-webkit-scrollbar {
+        display: none;
+    }
+
+    .ultimart-product-card {
+        background: #eef3ff;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+        flex: 0 0 100%;
+        min-height: auto;
+        scroll-snap-align: start;
+    }
+
+    .ultimart-product-card__link {
+        display: flex;
+        min-height: auto;
+    }
+
+    .ultimart-product-card__media {
+        aspect-ratio: 0.86 / 1;
+        border-radius: 10px;
+        margin: 12px;
+    }
+
+    .ultimart-product-card__media img {
+        object-fit: contain;
+        padding: 8px;
+    }
+
+    .ultimart-product-card__badge {
+        font-size: 15px;
+        left: 22px;
+        padding: 8px 12px;
+        top: 22px;
+    }
+
+    .ultimart-product-card__body {
+        gap: 12px;
+        padding: 12px 14px 24px;
+    }
+
+    .ultimart-product-card__header {
+        gap: 8px;
+    }
+
+    .ultimart-product-card__tag,
+    .ultimart-product-card__save {
+        font-size: 15px;
+        font-weight: 900;
+        padding: 7px 10px;
+    }
+
+    .ultimart-product-card__body h3 {
+        display: block;
+        font-size: 30px;
+        font-weight: 900;
+        line-height: 1.22;
+        overflow: visible;
+    }
+
+    .ultimart-product-card__body p {
+        display: block;
+        color: #111827;
+        font-size: 21px;
+        font-weight: 800;
+        line-height: 1.55;
+        overflow: visible;
+    }
+
+    .ultimart-product-card__price strong {
+        font-size: 38px;
+    }
+
+    .ultimart-product-card__price span {
+        font-size: 19px;
+    }
+
+    .ultimart-product-card__meta span {
+        background: #ffffff;
+        color: #111827;
+        font-size: 17px;
+        font-weight: 800;
+        padding: 9px 11px;
+    }
+
+    .ultimart-product-card__cta {
+        animation: ultimart-pulse 1.8s ease-in-out infinite;
+        border-radius: 10px;
+        font-size: 23px;
+        min-height: 62px;
+    }
+
+    .ultimart-carousel-dots {
+        align-items: center;
+        background: #eef3ff;
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        padding: 8px 0 16px;
+    }
+
+    .ultimart-carousel-dot {
+        background: #c4c7cf;
+        border: 0;
+        border-radius: 999px;
+        cursor: pointer;
+        height: 12px;
+        padding: 0;
+        transition: background 0.2s ease, transform 0.2s ease, width 0.2s ease;
+        width: 12px;
+    }
+
+    .ultimart-carousel-dot.is-active {
+        background: #111827;
+        transform: scale(1.08);
+        width: 26px;
+    }
+
+    .ultimart-detail-page {
+        background: #ffffff;
+    }
+
+    .ultimart-back-link,
+    .ultimart-trust-strip--detail,
+    .ultimart-detail-shell,
+    .ultimart-order-shell {
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .ultimart-detail-media-card,
+    .ultimart-detail-info-card,
+    .ultimart-order-summary,
+    .ultimart-order-form {
+        border-left: 0;
+        border-right: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .ultimart-detail-info__top h2,
+    .ultimart-order-summary h3,
+    .ultimart-order-form__head h3 {
+        font-size: 32px;
+        font-weight: 900;
+        line-height: 1.22;
+    }
+
+    .ultimart-detail-info__top p,
+    .ultimart-order-summary p,
+    .ultimart-order-form__head p,
+    .ultimart-detail-block p,
+    .ultimart-detail-block li,
+    .ultimart-form-note span {
+        color: #111827;
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 1.62;
+    }
+
+    .ultimart-detail-price strong,
+    .ultimart-order-summary__total strong {
+        font-size: 38px;
+    }
+
+    .ultimart-detail-actions__primary,
     .ultimart-order-form__submit,
-    .ultimart-order-form__whatsapp {
+    .ultimart-order-form__whatsapp,
+    .ultimart-mobile-order-bar__cta {
+        border-radius: 10px;
+        font-size: 22px;
+        min-height: 60px;
+    }
+
+    .ultimart-field span {
+        font-size: 16px;
+        font-weight: 900;
+    }
+
+    .ultimart-field input,
+    .ultimart-field textarea {
+        border-color: #111827;
+        border-radius: 8px;
+        font-size: 20px;
+        min-height: 56px;
+    }
+
+    .ultimart-mobile-order-bar {
+        border-radius: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+
+    .ultimart-mobile-order-bar__price strong {
+        font-size: 26px;
+    }
+}
+
+@media (max-width: 420px) {
+    .ultimart-product-grid {
+        display: flex;
+        grid-template-columns: none;
+    }
+
+    .ultimart-list-hero h2 {
+        font-size: 31px;
+    }
+
+    .ultimart-product-card__body h3 {
+        font-size: 28px;
+    }
+
+    .ultimart-product-card__body p {
+        font-size: 20px;
+    }
+}
+
+/* Final mobile width guard: makes plugin sections edge-to-edge inside padded themes. */
+@media (max-width: 760px) {
+    html,
+    body {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    .ultimart-list-page,
+    .ultimart-detail-page,
+    .ultimart-empty-state,
+    .ultimart-home-video {
+        left: 50%;
+        margin-left: calc(-50vw + (100vw - 100%) / 2);
+        margin-right: 0;
+        max-width: none;
+        position: relative;
+        right: auto;
+        width: calc(100vw - (100vw - 100%));
+    }
+
+    .ultimart-list-page a,
+    .ultimart-detail-page a,
+    .ultimart-home-video a {
+        text-decoration: none;
+    }
+
+    .ultimart-list-hero,
+    .ultimart-trust-strip,
+    .ultimart-product-card__body,
+    .ultimart-detail-media-card,
+    .ultimart-detail-info-card,
+    .ultimart-order-summary,
+    .ultimart-order-form {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .ultimart-list-hero__offer,
+    .ultimart-list-hero__metrics,
+    .ultimart-detail-info-card > *,
+    .ultimart-order-summary > *,
+    .ultimart-order-form > *,
+    .ultimart-product-card__body > * {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .ultimart-campaign-video,
+    .ultimart-product-grid,
+    .ultimart-carousel-dots {
+        margin-left: 0;
+        margin-right: 0;
+        width: 100%;
+    }
+
+    .ultimart-product-grid {
+        max-width: 100%;
+        overscroll-behavior-x: contain;
+        width: 100%;
+    }
+
+    .ultimart-product-card {
+        flex: 0 0 100%;
+        min-height: auto;
+        width: 100%;
+    }
+
+    .ultimart-product-card__link {
+        min-height: auto;
+    }
+
+    .ultimart-product-card__media {
+        margin-left: 10px;
+        margin-right: 10px;
+        max-height: 68vh;
+    }
+
+    .ultimart-mobile-order-bar {
+        max-width: 100%;
         width: 100%;
     }
 }
