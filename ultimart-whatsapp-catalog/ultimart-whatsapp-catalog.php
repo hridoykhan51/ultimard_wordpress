@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Ultimart WhatsApp Catalog
  * Description: Bangla product list and separate product detail/order page with database order storage.
- * Version: 3.1.3
+ * Version: 3.1.4
  * Author: Hridoy
  */
 
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 }
 
 final class Ultimart_WhatsApp_Catalog {
-    const VERSION = '3.1.3';
+    const VERSION = '3.1.4';
     const TABLE_SUFFIX = 'ultimart_orders';
 
     public function __construct() {
