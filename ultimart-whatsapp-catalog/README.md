@@ -4,6 +4,7 @@ This version uses the structure below:
 
 - Page 1: product list
 - Page 2: single product detail + quantity + shipping form
+- Same detail page can serve 4 separate direct product URLs
 - Orders save in the WordPress database
 - Admin order screen: `WordPress Admin > আল্টিমার্ট অর্ডার`
 
@@ -49,11 +50,29 @@ Replace `8801XXXXXXXXX` with your WhatsApp number.
 Now customers will:
 
 1. open the Shop page
-2. click a product card
+2. tap anywhere on a product card
 3. go to the Order page
 4. select quantity
 5. fill shipping address and phone
 6. save the order
+
+## Direct product links
+
+You do not need 4 separate WordPress pages.
+
+Keep 1 detail page and use direct URLs like these:
+
+- `/order/?ultimart_product=binbond-silver`
+- `/order/?ultimart_product=binbond-blue`
+- `/order/?ultimart_product=binbond-black`
+- `/order/?ultimart_product=ultimart-combo`
+
+This means:
+
+- customers can come from the Shop page
+- or you can send a direct order link for a single product
+
+If your detail page slug is different, replace `/order/` with your own page slug.
 
 ## Images
 

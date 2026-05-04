@@ -79,7 +79,7 @@
             formMessage.textContent = "";
             formMessage.className = "ultimart-order-form__message";
             submitButton.disabled = true;
-            submitButton.textContent = "সেভ হচ্ছে...";
+            submitButton.textContent = "অর্ডার হচ্ছে...";
 
             var formData = new FormData(form);
             formData.set("whatsapp", payload.whatsapp || "");
@@ -94,11 +94,11 @@
                 })
                 .then(function (response) {
                     if (!response.success) {
-                        throw new Error(response.data && response.data.message ? response.data.message : "অর্ডার সেভ করা যায়নি।");
+                        throw new Error(response.data && response.data.message ? response.data.message : "অর্ডার সম্পন্ন করা যায়নি।");
                     }
 
                     formMessage.className = "ultimart-order-form__message is-success";
-                    formMessage.innerHTML = "অর্ডার সফলভাবে সেভ হয়েছে। অর্ডার আইডি: <strong>#"
+                    formMessage.innerHTML = "অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে। অর্ডার আইডি: <strong>#"
                         + escapeHtml(response.data.order_id)
                         + "</strong>";
 
@@ -112,7 +112,7 @@
                 })
                 .finally(function () {
                     submitButton.disabled = false;
-                    submitButton.textContent = "অর্ডার সেভ করুন";
+                    submitButton.textContent = "অর্ডার করুন";
                 });
         });
 

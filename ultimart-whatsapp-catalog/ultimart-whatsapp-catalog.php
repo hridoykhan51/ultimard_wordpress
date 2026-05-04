@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Ultimart WhatsApp Catalog
  * Description: Bangla product list and separate product detail/order page with database order storage.
- * Version: 3.0.0
+ * Version: 3.1.3
  * Author: Hridoy
  */
 
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 }
 
 final class Ultimart_WhatsApp_Catalog {
-    const VERSION = '3.0.0';
+    const VERSION = '3.1.3';
     const TABLE_SUFFIX = 'ultimart_orders';
 
     public function __construct() {
@@ -313,10 +313,10 @@ final class Ultimart_WhatsApp_Catalog {
     public function render_product_list_shortcode($atts) {
         $atts = shortcode_atts(
             array(
-                'title' => 'আমাদের পণ্যসমূহ',
-                'subtitle' => 'পণ্যে ক্লিক করুন এবং আলাদা ডিটেইল পেজে গিয়ে অর্ডার করুন।',
+                'title' => 'পছন্দের প্রোডাক্ট বেছে নিন',
+                'subtitle' => 'আজকের সেরা কালেকশন থেকে পছন্দের প্রোডাক্ট সিলেক্ট করুন, ডিটেইল দেখুন এবং সাথে সাথে অর্ডার করুন।',
                 'detail_page' => '',
-                'button_text' => 'বিস্তারিত দেখুন',
+                'button_text' => 'অর্ডার করুন',
             ),
             $atts,
             'ultimart_product_list'
@@ -339,9 +339,11 @@ final class Ultimart_WhatsApp_Catalog {
             <div class="ultimart-product-grid">
                 <?php foreach ($products as $product) : ?>
                     <article class="ultimart-product-card">
+                        <?php $product_url = add_query_arg('ultimart_product', $product['id'], $detail_page_url); ?>
                         <a
                             class="ultimart-product-card__link"
-                            href="<?php echo esc_url(add_query_arg('ultimart_product', $product['id'], $detail_page_url)); ?>"
+                            href="<?php echo esc_url($product_url); ?>"
+                            aria-label="<?php echo esc_attr($product['name'] . ' - ' . $atts['button_text']); ?>"
                         >
                             <div class="ultimart-product-card__media">
                                 <img
@@ -377,7 +379,7 @@ final class Ultimart_WhatsApp_Catalog {
             array(
                 'whatsapp' => '8801000000000',
                 'back_page' => '',
-                'back_text' => 'সব পণ্যে ফিরে যান',
+                'back_text' => 'সব প্রোডাক্ট দেখুন',
             ),
             $atts,
             'ultimart_product_detail'
@@ -395,8 +397,8 @@ final class Ultimart_WhatsApp_Catalog {
             ob_start();
             ?>
             <section class="ultimart-empty-state">
-                <h2>পণ্য নির্বাচন করা হয়নি</h2>
-                <p>আগে পণ্য তালিকা পেজ থেকে একটি পণ্য নির্বাচন করুন, তারপর এখানে এসে অর্ডার করুন।</p>
+                <h2>এখনও কোনো প্রোডাক্ট সিলেক্ট করা হয়নি</h2>
+                <p>পছন্দের প্রোডাক্টটি বেছে নিন, তারপর দ্রুত অর্ডার সম্পন্ন করুন।</p>
                 <?php if (!empty($back_url)) : ?>
                     <a class="ultimart-back-link" href="<?php echo esc_url($back_url); ?>">
                         <?php echo esc_html($atts['back_text']); ?>
@@ -444,6 +446,11 @@ final class Ultimart_WhatsApp_Catalog {
                         <strong><?php echo esc_html($this->get_price($product['price'])); ?> &#2547;</strong>
                         <span><?php echo esc_html($this->get_price($product['old_price'])); ?> &#2547;</span>
                     </div>
+                    <div class="ultimart-detail-actions">
+                        <a class="ultimart-detail-actions__primary" href="#ultimart-order-form">
+                            অর্ডার করুন
+                        </a>
+                    </div>
 
                     <div class="ultimart-detail-columns">
                         <div class="ultimart-detail-block">
@@ -467,9 +474,9 @@ final class Ultimart_WhatsApp_Catalog {
 
             <div class="ultimart-order-shell">
                 <div class="ultimart-order-summary">
-                    <span class="ultimart-section-eyebrow">অর্ডার সারাংশ</span>
+                    <span class="ultimart-section-eyebrow">দ্রুত অর্ডার</span>
                     <h3><?php echo esc_html($product['name']); ?></h3>
-                    <p><?php echo esc_html($product['excerpt']); ?></p>
+                    <p>আজই অর্ডার করুন। সীমিত স্টক, দ্রুত কনফার্মেশনের জন্য নিচের তথ্য পূরণ করুন।</p>
 
                     <div class="ultimart-order-summary__row">
                         <span>একক দাম</span>
@@ -491,7 +498,7 @@ final class Ultimart_WhatsApp_Catalog {
                     </div>
                 </div>
 
-                <form class="ultimart-order-form" data-order-form>
+                <form id="ultimart-order-form" class="ultimart-order-form" data-order-form>
                     <input type="hidden" name="action" value="ultimart_place_order" />
                     <input type="hidden" name="nonce" value="<?php echo esc_attr(wp_create_nonce('ultimart_order_nonce')); ?>" />
                     <input type="hidden" name="product_id" value="<?php echo esc_attr($product['id']); ?>" data-input="product_id" />
@@ -499,15 +506,15 @@ final class Ultimart_WhatsApp_Catalog {
                     <input type="hidden" name="source_page" value="<?php echo esc_attr(get_the_title()); ?>" />
 
                     <div class="ultimart-order-form__head">
-                        <span class="ultimart-section-eyebrow">শিপিং ফর্ম</span>
-                        <h3>অর্ডার তথ্য দিন</h3>
-                        <p>নিচের ফর্ম পূরণ করলে অর্ডার WordPress admin-এ সেভ হবে।</p>
+                        <span class="ultimart-section-eyebrow">ডেলিভারি তথ্য</span>
+                        <h3>অর্ডার সম্পন্ন করুন</h3>
+                        <p>সঠিক নাম, ফোন নাম্বার ও ঠিকানা দিন। আমরা দ্রুত আপনার অর্ডার কনফার্ম করব।</p>
                     </div>
 
                     <div class="ultimart-order-form__grid">
                         <label class="ultimart-field">
-                            <span>কাস্টমারের নাম</span>
-                            <input type="text" name="customer_name" placeholder="পূর্ণ নাম" required />
+                            <span>আপনার নাম</span>
+                            <input type="text" name="customer_name" placeholder="আপনার পূর্ণ নাম" required />
                         </label>
 
                         <label class="ultimart-field">
@@ -518,25 +525,25 @@ final class Ultimart_WhatsApp_Catalog {
 
                     <div class="ultimart-order-form__grid">
                         <label class="ultimart-field">
-                            <span>এলাকা / জেলা</span>
+                            <span>ডেলিভারি এলাকা</span>
                             <input type="text" name="area" placeholder="ঢাকা / চট্টগ্রাম / ইত্যাদি" required />
                         </label>
 
                         <label class="ultimart-field">
-                            <span>ল্যান্ডমার্ক / নোট</span>
+                            <span>ল্যান্ডমার্ক / বিশেষ নির্দেশনা</span>
                             <input type="text" name="notes" placeholder="ঐচ্ছিক" />
                         </label>
                     </div>
 
                     <label class="ultimart-field">
-                        <span>শিপিং ঠিকানা</span>
+                        <span>সম্পূর্ণ ঠিকানা</span>
                         <textarea name="address" rows="4" placeholder="বাসা, রোড, থানা, জেলা" required></textarea>
                     </label>
 
                     <div class="ultimart-order-form__actions">
-                        <button type="submit" class="ultimart-order-form__submit">অর্ডার সেভ করুন</button>
+                        <button type="submit" class="ultimart-order-form__submit">অর্ডার করুন</button>
                         <a href="#" class="ultimart-order-form__whatsapp" target="_blank" rel="noopener" data-whatsapp-link>
-                            WhatsApp কপি
+                            WhatsApp এ পাঠান
                         </a>
                     </div>
 
@@ -601,7 +608,7 @@ final class Ultimart_WhatsApp_Catalog {
         );
 
         if (false === $inserted) {
-            wp_send_json_error(array('message' => 'অর্ডার সেভ করা যায়নি। আবার চেষ্টা করুন।'), 500);
+            wp_send_json_error(array('message' => 'অর্ডার সম্পন্ন করা যায়নি। আবার চেষ্টা করুন।'), 500);
         }
 
         $order_id = (int) $wpdb->insert_id;
@@ -609,7 +616,7 @@ final class Ultimart_WhatsApp_Catalog {
 
         wp_send_json_success(
             array(
-                'message' => 'অর্ডার সফলভাবে সেভ হয়েছে।',
+                'message' => 'অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে।',
                 'order_id' => $order_id,
                 'whatsapp_url' => $this->build_whatsapp_url(
                     $whatsapp_number,
