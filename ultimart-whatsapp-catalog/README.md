@@ -8,6 +8,26 @@ This version uses the structure below:
 - Orders save in the WordPress database
 - Admin order screen: `WordPress Admin > আল্টিমার্ট অর্ডার`
 
+## Current catalog
+
+This package currently includes 4 products:
+
+- `binbond-silver` = BINBOND লাক্সারি ঘড়ি সিলভার হোয়াইট
+- `binbond-blue` = BINBOND লাক্সারি ঘড়ি রয়্যাল ব্লু
+- `binbond-black` = BINBOND লাক্সারি ঘড়ি মিডনাইট ব্ল্যাক
+- `ultimart-combo` = দ্য আলটিমেট জেন্টলম্যান ৩-ইন-১ লাক্সারি কম্বো
+
+Current combo pricing:
+
+- Offer price: `999` টাকা
+- Regular price: `1350` টাকা
+
+Current combo items:
+
+- ট্রেন্ডি ওভাল সানগ্লাস
+- আরমানি লেদার ওয়ালেট
+- CURREN লাক্সারি ওয়াচ
+
 ## Shortcodes
 
 ### Product list page
@@ -90,6 +110,10 @@ This means:
 
 If your detail page slug is different, replace `/order/` with your own page slug.
 
+Example combo direct order link:
+
+- `/order/?ultimart_product=ultimart-combo`
+
 ## Images
 
 The plugin supports 2 image methods.
@@ -143,3 +167,11 @@ For this plugin's campaign text:
 - Product names, prices, features, delivery text are inside `get_products()`
 - Design and mobile carousel styles are in `assets/style.css`
 - Carousel autoplay is in `assets/app.js`
+
+## Install ZIP in WordPress
+
+1. Go to `WordPress Admin > Plugins > Add New Plugin`
+2. Click `Upload Plugin`
+3. Select the ZIP file: `ultimart-whatsapp-catalog.zip`
+4. Click `Install Now`
+5. Activate the plugin
