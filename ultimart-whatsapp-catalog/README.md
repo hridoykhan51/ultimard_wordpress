@@ -51,6 +51,8 @@ Put this shortcode at the start of the Home page only:
 [ultimart_campaign_video]
 ```
 
+Use only the shortcode on the page. Do not paste the YouTube URL separately in the page content.
+
 To use a different video:
 
 ```text
@@ -149,6 +151,10 @@ To see saved orders:
 
 - `WordPress Admin > আল্টিমার্ট অর্ডার`
 
+Pending orders can be accepted from the order table. Use `Accept` to mark an
+order as accepted, `Cancel` to reject it, or `Pending` to move it back to the
+waiting state.
+
 ## Header and footer update
 
 This plugin controls only the product/order shortcode area. The site header and
@@ -165,8 +171,8 @@ For this plugin's campaign text:
 
 - Main list heading/subtitle is in `ultimart-whatsapp-catalog.php`
 - Product names, prices, features, delivery text are inside `get_products()`
-- Design and mobile carousel styles are in `assets/style.css`
-- Carousel autoplay is in `assets/app.js`
+- Design and product list styles are in `assets/style.css`
+- Product detail/order interactions are in `assets/app.js`
 
 ## Install ZIP in WordPress
 

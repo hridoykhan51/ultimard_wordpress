@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Ultimart WhatsApp Catalog
  * Description: Bangla product list and separate product detail/order page with database order storage.
- * Version: 3.4.4
+ * Version: 3.4.7
  * Author: Hridoy
  */
 
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 }
 
 final class Ultimart_WhatsApp_Catalog {
-    const VERSION = '3.4.4';
+    const VERSION = '3.4.7';
     const TABLE_SUFFIX = 'ultimart_orders';
 
     public function __construct() {
@@ -24,6 +24,7 @@ final class Ultimart_WhatsApp_Catalog {
         add_action('wp_ajax_ultimart_place_order', array($this, 'handle_order_submission'));
         add_action('wp_ajax_nopriv_ultimart_place_order', array($this, 'handle_order_submission'));
         add_action('admin_menu', array($this, 'register_admin_menu'));
+        add_action('admin_post_ultimart_update_order_status', array($this, 'handle_admin_order_status_update'));
     }
 
     public static function activate() {
@@ -112,17 +113,37 @@ final class Ultimart_WhatsApp_Catalog {
             return '';
         }
 
-        if (preg_match('~(?:youtube\.com/shorts/|youtu\.be/|youtube\.com/watch\?v=|youtube\.com/embed/)([A-Za-z0-9_-]{6,})~', $video_url, $matches)) {
-            return 'https://www.youtube.com/embed/' . $matches[1] . '?autoplay=0&rel=0&modestbranding=1&playsinline=1';
+        if (preg_match('~(?:youtube(?:-nocookie)?\.com/(?:shorts/|embed/)|youtu\.be/)([A-Za-z0-9_-]{6,})~', $video_url, $matches)) {
+            return 'https://www.youtube-nocookie.com/embed/' . $matches[1] . '?autoplay=0&rel=0&modestbranding=1&playsinline=1';
         }
 
-        return esc_url_raw($video_url);
+        $query = wp_parse_url($video_url, PHP_URL_QUERY);
+
+        if (!empty($query)) {
+            parse_str($query, $params);
+
+            if (!empty($params['v']) && preg_match('~^[A-Za-z0-9_-]{6,}$~', $params['v'])) {
+                return 'https://www.youtube-nocookie.com/embed/' . $params['v'] . '?autoplay=0&rel=0&modestbranding=1&playsinline=1';
+            }
+        }
+
+        return '';
     }
 
     private function get_orders_table_name() {
         global $wpdb;
 
         return $wpdb->prefix . self::TABLE_SUFFIX;
+    }
+
+    private function get_order_status_label($status) {
+        $labels = array(
+            'pending' => 'অপেক্ষমাণ',
+            'accepted' => 'গ্রহণ করা হয়েছে',
+            'cancelled' => 'বাতিল',
+        );
+
+        return isset($labels[$status]) ? $labels[$status] : $status;
     }
 
     private function build_placeholder_image($title, $accent_a, $accent_b) {
@@ -168,6 +189,26 @@ final class Ultimart_WhatsApp_Catalog {
         return $this->build_placeholder_image($product['name'], $product['accent_a'], $product['accent_b']);
     }
 
+    private function resolve_product_images($product) {
+        $images = array();
+
+        if (!empty($product['image_files']) && is_array($product['image_files'])) {
+            foreach ($product['image_files'] as $image_file) {
+                $absolute_path = plugin_dir_path(__FILE__) . $image_file;
+
+                if (file_exists($absolute_path)) {
+                    $images[] = plugin_dir_url(__FILE__) . str_replace('\\', '/', $image_file);
+                }
+            }
+        }
+
+        if (empty($images)) {
+            $images[] = $this->resolve_product_image($product);
+        }
+
+        return $images;
+    }
+
     private function get_products() {
         $products = array(
             array(
@@ -175,8 +216,8 @@ final class Ultimart_WhatsApp_Catalog {
                 'name' => 'BINBOND লাক্সারি ঘড়ি সিলভার হোয়াইট',
                 'tag' => 'লাক্সারি ঘড়ি',
                 'badge' => 'বেস্ট সেলার',
-                'price' => 1490,
-                'old_price' => 1990,
+                'price' => 900,
+                'old_price' => 1350,
                 'excerpt' => 'সিলভার-গোল্ড প্রিমিয়াম ফিনিশ, হোয়াইট ডায়াল এবং ডে-ডেট ডিসপ্লে।',
                 'image_url' => '',
                 'image_file' => 'assets/images/product-1.jpeg',
@@ -203,8 +244,8 @@ final class Ultimart_WhatsApp_Catalog {
                 'name' => 'BINBOND লাক্সারি ঘড়ি রয়্যাল ব্লু',
                 'tag' => 'লাক্সারি ঘড়ি',
                 'badge' => 'নতুন এসেছে',
-                'price' => 1490,
-                'old_price' => 1990,
+                'price' => 900,
+                'old_price' => 1350,
                 'excerpt' => 'ডিপ ব্লু ডায়াল, গোল্ড অ্যাকসেন্ট এবং চোখে পড়ার মতো প্রিমিয়াম লুক।',
                 'image_url' => '',
                 'image_file' => 'assets/images/product-2.jpeg',
@@ -231,8 +272,8 @@ final class Ultimart_WhatsApp_Catalog {
                 'name' => 'BINBOND লাক্সারি ঘড়ি মিডনাইট ব্ল্যাক',
                 'tag' => 'লাক্সারি ঘড়ি',
                 'badge' => 'এলিগ্যান্ট পিক',
-                'price' => 1490,
-                'old_price' => 1990,
+                'price' => 900,
+                'old_price' => 1350,
                 'excerpt' => 'ডার্ক ব্ল্যাক ডায়াল এবং প্রিমিয়াম মেটাল ব্রেসলেটের সিরিয়াস লাক্সারি লুক।',
                 'image_url' => '',
                 'image_file' => 'assets/images/product-3.jpeg',
@@ -264,6 +305,12 @@ final class Ultimart_WhatsApp_Catalog {
                 'excerpt' => 'ট্রেন্ডি সানগ্লাস, আরমানি ওয়ালেট ও CURREN ওয়াচ একসাথে একটি প্রিমিয়াম গিফট কম্বো।',
                 'image_url' => '',
                 'image_file' => 'assets/images/product-4.jpeg',
+                'image_files' => array(
+                    'assets/images/product-4.jpeg',
+                    'assets/images/glass.jpeg',
+                    'assets/images/wallet.jpeg',
+                    'assets/images/watch.jpeg',
+                ),
                 'accent_a' => '#6c4e2d',
                 'accent_b' => '#151515',
                 'description' => array(
@@ -284,8 +331,22 @@ final class Ultimart_WhatsApp_Catalog {
             ),
         );
 
+        $ordered_products = array();
+
+        foreach ($products as $product) {
+            if ('ultimart-combo' === $product['id']) {
+                array_unshift($ordered_products, $product);
+                continue;
+            }
+
+            $ordered_products[] = $product;
+        }
+
+        $products = $ordered_products;
+
         foreach ($products as &$product) {
-            $product['image'] = $this->resolve_product_image($product);
+            $product['images'] = $this->resolve_product_images($product);
+            $product['image'] = $product['images'][0];
         }
 
         unset($product);
@@ -408,8 +469,8 @@ final class Ultimart_WhatsApp_Catalog {
                 <div class="ultimart-trust-pill">গিফট রেডি ফিনিশ</div>
             </div>
 
-            <div class="ultimart-product-grid" data-product-carousel>
-                <?php foreach ($products as $product_index => $product) : ?>
+            <div class="ultimart-product-grid">
+                <?php foreach ($products as $product) : ?>
                     <?php
                     $product_url = add_query_arg('ultimart_product', $product['id'], $detail_page_url);
                     $discount_percent = $this->get_discount_percent($product['price'], $product['old_price']);
@@ -422,11 +483,26 @@ final class Ultimart_WhatsApp_Catalog {
                             aria-label="<?php echo esc_attr($product['name'] . ' - ' . $atts['button_text']); ?>"
                         >
                             <div class="ultimart-product-card__media">
-                                <img
-                                    src="<?php echo esc_url($product['image']); ?>"
-                                    alt="<?php echo esc_attr($product['name']); ?>"
-                                    loading="lazy"
-                                />
+                                <?php if (!empty($product['images']) && count($product['images']) > 1) : ?>
+                                    <div class="ultimart-product-card__slider" aria-label="<?php echo esc_attr($product['name']); ?>">
+                                        <?php for ($slide_loop = 0; $slide_loop < 2; $slide_loop++) : ?>
+                                            <?php foreach ($product['images'] as $image_url) : ?>
+                                                <img
+                                                    src="<?php echo esc_url($image_url); ?>"
+                                                    alt="<?php echo esc_attr(0 === $slide_loop ? $product['name'] : ''); ?>"
+                                                    loading="lazy"
+                                                    <?php echo 0 === $slide_loop ? '' : 'aria-hidden="true"'; ?>
+                                                />
+                                            <?php endforeach; ?>
+                                        <?php endfor; ?>
+                                    </div>
+                                <?php else : ?>
+                                    <img
+                                        src="<?php echo esc_url($product['image']); ?>"
+                                        alt="<?php echo esc_attr($product['name']); ?>"
+                                        loading="lazy"
+                                    />
+                                <?php endif; ?>
                                 <span class="ultimart-product-card__badge"><?php echo esc_html($product['badge']); ?></span>
                             </div>
 
@@ -453,16 +529,6 @@ final class Ultimart_WhatsApp_Catalog {
                             </div>
                         </a>
                     </article>
-                <?php endforeach; ?>
-            </div>
-            <div class="ultimart-carousel-dots" data-carousel-dots aria-label="প্রোডাক্ট স্লাইড">
-                <?php foreach ($products as $product_index => $product) : ?>
-                    <button
-                        type="button"
-                        class="ultimart-carousel-dot<?php echo 0 === $product_index ? ' is-active' : ''; ?>"
-                        data-carousel-dot="<?php echo esc_attr($product_index); ?>"
-                        aria-label="<?php echo esc_attr(($product_index + 1) . ' নম্বর প্রোডাক্ট দেখুন'); ?>"
-                    ></button>
                 <?php endforeach; ?>
             </div>
         </section>
@@ -570,7 +636,21 @@ final class Ultimart_WhatsApp_Catalog {
             <div class="ultimart-detail-shell">
                 <div class="ultimart-detail-media-card">
                     <div class="ultimart-detail-media">
-                        <img src="<?php echo esc_url($product['image']); ?>" alt="<?php echo esc_attr($product['name']); ?>" />
+                        <?php if (!empty($product['images']) && count($product['images']) > 1) : ?>
+                            <div class="ultimart-product-card__slider" aria-label="<?php echo esc_attr($product['name']); ?>">
+                                <?php for ($slide_loop = 0; $slide_loop < 2; $slide_loop++) : ?>
+                                    <?php foreach ($product['images'] as $image_url) : ?>
+                                        <img
+                                            src="<?php echo esc_url($image_url); ?>"
+                                            alt="<?php echo esc_attr(0 === $slide_loop ? $product['name'] : ''); ?>"
+                                            <?php echo 0 === $slide_loop ? '' : 'aria-hidden="true"'; ?>
+                                        />
+                                    <?php endforeach; ?>
+                                <?php endfor; ?>
+                            </div>
+                        <?php else : ?>
+                            <img src="<?php echo esc_url($product['image']); ?>" alt="<?php echo esc_attr($product['name']); ?>" />
+                        <?php endif; ?>
                     </div>
 
                     <div class="ultimart-media-highlights">
@@ -839,6 +919,41 @@ final class Ultimart_WhatsApp_Catalog {
         );
     }
 
+    public function handle_admin_order_status_update() {
+        if (!current_user_can('manage_options')) {
+            wp_die(esc_html__('You do not have permission to update orders.', 'ultimart-whatsapp-catalog'));
+        }
+
+        $order_id = isset($_POST['order_id']) ? absint($_POST['order_id']) : 0;
+        $status = isset($_POST['status']) ? sanitize_key(wp_unslash($_POST['status'])) : '';
+        $allowed_statuses = array('pending', 'accepted', 'cancelled');
+
+        check_admin_referer('ultimart_update_order_status_' . $order_id);
+
+        if ($order_id > 0 && in_array($status, $allowed_statuses, true)) {
+            global $wpdb;
+
+            $wpdb->update(
+                $this->get_orders_table_name(),
+                array('status' => $status),
+                array('id' => $order_id),
+                array('%s'),
+                array('%d')
+            );
+        }
+
+        wp_safe_redirect(
+            add_query_arg(
+                array(
+                    'page' => 'ultimart-orders',
+                    'ultimart_notice' => 'status-updated',
+                ),
+                admin_url('admin.php')
+            )
+        );
+        exit;
+    }
+
     public function render_orders_page() {
         if (!current_user_can('manage_options')) {
             return;
@@ -853,6 +968,12 @@ final class Ultimart_WhatsApp_Catalog {
         <div class="wrap">
             <h1>আল্টিমার্ট অর্ডারসমূহ</h1>
             <p>প্রোডাক্ট ডিটেইল পেজ থেকে আসা অর্ডারগুলো এখানে দেখা যাবে।</p>
+
+            <?php if (isset($_GET['ultimart_notice']) && 'status-updated' === sanitize_key(wp_unslash($_GET['ultimart_notice']))) : ?>
+                <div class="notice notice-success is-dismissible">
+                    <p>অর্ডার স্ট্যাটাস আপডেট হয়েছে।</p>
+                </div>
+            <?php endif; ?>
 
             <?php if (empty($orders)) : ?>
                 <p><strong>এখনও কোনো অর্ডার আসেনি।</strong></p>
@@ -870,6 +991,7 @@ final class Ultimart_WhatsApp_Catalog {
                             <th>ঠিকানা</th>
                             <th>মোট</th>
                             <th>স্ট্যাটাস</th>
+                            <th>অ্যাকশন</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -890,7 +1012,33 @@ final class Ultimart_WhatsApp_Catalog {
                                 <td><?php echo esc_html($order->area); ?></td>
                                 <td><?php echo esc_html($order->address); ?></td>
                                 <td><?php echo esc_html($this->get_price($order->total_price)); ?> &#2547;</td>
-                                <td><?php echo 'pending' === $order->status ? 'অপেক্ষমাণ' : esc_html($order->status); ?></td>
+                                <td><?php echo esc_html($this->get_order_status_label($order->status)); ?></td>
+                                <td>
+                                    <?php if ('pending' === $order->status) : ?>
+                                        <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="display:inline-block;margin:0 6px 6px 0;">
+                                            <input type="hidden" name="action" value="ultimart_update_order_status" />
+                                            <input type="hidden" name="order_id" value="<?php echo esc_attr($order->id); ?>" />
+                                            <input type="hidden" name="status" value="accepted" />
+                                            <?php wp_nonce_field('ultimart_update_order_status_' . $order->id); ?>
+                                            <button type="submit" class="button button-primary">Accept</button>
+                                        </form>
+                                        <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="display:inline-block;margin:0;">
+                                            <input type="hidden" name="action" value="ultimart_update_order_status" />
+                                            <input type="hidden" name="order_id" value="<?php echo esc_attr($order->id); ?>" />
+                                            <input type="hidden" name="status" value="cancelled" />
+                                            <?php wp_nonce_field('ultimart_update_order_status_' . $order->id); ?>
+                                            <button type="submit" class="button">Cancel</button>
+                                        </form>
+                                    <?php else : ?>
+                                        <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="display:inline-block;margin:0;">
+                                            <input type="hidden" name="action" value="ultimart_update_order_status" />
+                                            <input type="hidden" name="order_id" value="<?php echo esc_attr($order->id); ?>" />
+                                            <input type="hidden" name="status" value="pending" />
+                                            <?php wp_nonce_field('ultimart_update_order_status_' . $order->id); ?>
+                                            <button type="submit" class="button">Pending</button>
+                                        </form>
+                                    <?php endif; ?>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
