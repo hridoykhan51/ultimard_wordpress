@@ -26,9 +26,30 @@
         var submitButton = section.querySelector(".ultimart-order-form__submit");
         var qtyInput = section.querySelector("[data-quantity]");
         var whatsappLink = section.querySelector("[data-whatsapp-link]");
+        var subtotalField = section.querySelector('[data-summary="subtotal"]');
+        var deliveryField = section.querySelector('[data-summary="delivery"]');
         var totalField = section.querySelector('[data-summary="total"]');
         var hiddenQuantity = form.querySelector('[data-input="quantity"]');
+        var deliveryInputs = section.querySelectorAll('input[name="delivery_area"]');
         var quantity = 1;
+        var deliveryCharges = {
+            dhaka: { label: "ঢাকার ভিতরে", charge: 60 },
+            outside_dhaka: { label: "ঢাকার বাইরে", charge: 130 }
+        };
+
+        function getSelectedDelivery() {
+            var selected = section.querySelector('input[name="delivery_area"]:checked');
+            var key = selected ? selected.value : "dhaka";
+            return deliveryCharges[key] || deliveryCharges.dhaka;
+        }
+
+        function getSubtotal() {
+            return (Number(product.price) || 0) * quantity;
+        }
+
+        function getTotal() {
+            return getSubtotal() + getSelectedDelivery().charge;
+        }
 
         function syncWhatsappLink(orderData) {
             if (!payload.whatsapp) {
@@ -43,12 +64,15 @@
                 return;
             }
 
+            var delivery = getSelectedDelivery();
             var lines = [
                 "আসসালামু আলাইকুম, আমি এই পণ্যটি অর্ডার করতে চাই।",
                 "",
                 "পণ্যের নাম: " + product.name,
                 "পরিমাণ: " + quantity,
-                "মোট দাম: " + formatMoney((Number(product.price) || 0) * quantity, payload.currencySymbol || "৳")
+                "সাবটোটাল: " + formatMoney(getSubtotal(), payload.currencySymbol || "৳"),
+                "ডেলিভারি: " + delivery.label + " - " + formatMoney(delivery.charge, payload.currencySymbol || "৳"),
+                "মোট দাম: " + formatMoney(getTotal(), payload.currencySymbol || "৳")
             ];
 
             whatsappLink.href = "https://wa.me/" + payload.whatsapp + "?text=" + encodeURIComponent(lines.join("\n"));
@@ -58,7 +82,9 @@
             quantity = Math.max(1, nextQuantity);
             qtyInput.value = String(quantity);
             hiddenQuantity.value = String(quantity);
-            totalField.textContent = formatMoney((Number(product.price) || 0) * quantity, payload.currencySymbol || "৳");
+            subtotalField.textContent = formatMoney(getSubtotal(), payload.currencySymbol || "৳");
+            deliveryField.textContent = formatMoney(getSelectedDelivery().charge, payload.currencySymbol || "৳");
+            totalField.textContent = formatMoney(getTotal(), payload.currencySymbol || "৳");
             syncWhatsappLink();
         }
 
@@ -73,6 +99,12 @@
             });
         });
 
+        deliveryInputs.forEach(function (input) {
+            input.addEventListener("change", function () {
+                updateQuantity(quantity);
+            });
+        });
+
         form.addEventListener("submit", function (event) {
             event.preventDefault();
 
@@ -81,8 +113,10 @@
             submitButton.disabled = true;
             submitButton.textContent = "অর্ডার হচ্ছে...";
 
+            var selectedDelivery = section.querySelector('input[name="delivery_area"]:checked');
             var formData = new FormData(form);
             formData.set("whatsapp", payload.whatsapp || "");
+            formData.set("delivery_area", selectedDelivery ? selectedDelivery.value : "dhaka");
 
             fetch(payload.ajaxUrl, {
                 method: "POST",
