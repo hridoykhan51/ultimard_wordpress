@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Ultimart WhatsApp Catalog
  * Description: Bangla product list and separate product detail/order page with database order storage.
- * Version: 3.5.3
+ * Version: 3.5.4
  * Author: Hridoy
  */
 
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
 }
 
 final class Ultimart_WhatsApp_Catalog {
-    const VERSION = '3.5.3';
+    const VERSION = '3.5.4';
     const TABLE_SUFFIX = 'ultimart_orders';
 
     public function __construct() {
@@ -96,7 +96,7 @@ final class Ultimart_WhatsApp_Catalog {
     }
 
     private function get_price($amount) {
-        return number_format_i18n((float) $amount, 0);
+        return number_format((float) $amount, 0, '.', ',');
     }
 
     private function get_discount_percent($price, $old_price) {
@@ -938,7 +938,7 @@ final class Ultimart_WhatsApp_Catalog {
                     </div>
 
                     <div class="ultimart-order-summary__row">
-                        <span>একক দাম</span>
+                        <span>Unit Price</span>
                         <strong data-summary="unit-price"><?php echo esc_html($this->get_price($product['price'])); ?> &#2547;</strong>
                     </div>
 
@@ -952,35 +952,35 @@ final class Ultimart_WhatsApp_Catalog {
                     </div>
 
                     <div class="ultimart-delivery-options" data-delivery-options>
-                        <span class="ultimart-delivery-options__title">ডেলিভারি চার্জ</span>
+                        <span class="ultimart-delivery-options__title">Delivery Charge</span>
                         <label class="ultimart-delivery-option">
                             <input type="radio" name="delivery_area" value="dhaka" form="ultimart-order-form" checked />
                             <span>
                                 <strong>ঢাকার ভিতরে</strong>
-                                <small>60 টাকা</small>
+                                <small>60 Tk</small>
                             </span>
                         </label>
                         <label class="ultimart-delivery-option">
                             <input type="radio" name="delivery_area" value="outside_dhaka" form="ultimart-order-form" />
                             <span>
                                 <strong>ঢাকার বাইরে</strong>
-                                <small>130 টাকা</small>
+                                <small>130 Tk</small>
                             </span>
                         </label>
                     </div>
 
                     <div class="ultimart-order-summary__row">
-                        <span>সাবটোটাল</span>
+                        <span>Subtotal</span>
                         <strong data-summary="subtotal"><?php echo esc_html($this->get_price($product['price'])); ?> &#2547;</strong>
                     </div>
 
                     <div class="ultimart-order-summary__row">
-                        <span>ডেলিভারি চার্জ</span>
+                        <span>Delivery Charge</span>
                         <strong data-summary="delivery">60 &#2547;</strong>
                     </div>
 
                     <div class="ultimart-order-summary__row ultimart-order-summary__total">
-                        <span>মোট</span>
+                        <span>Total</span>
                         <strong data-summary="total"><?php echo esc_html($this->get_price($product['price'] + 60)); ?> &#2547;</strong>
                     </div>
                 </div>

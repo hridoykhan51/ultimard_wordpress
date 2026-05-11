@@ -178,6 +178,102 @@
     }
 }
 
+/* Mobile video alignment fix: keep video centered inside the theme column. */
+@media (max-width: 760px) {
+    .ultimart-home-video {
+        box-sizing: border-box;
+        display: block;
+        left: auto !important;
+        margin: 14px auto 0 !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        position: relative;
+        right: auto !important;
+        text-align: center;
+        transform: none !important;
+        width: 100% !important;
+    }
+
+    .ultimart-campaign-video {
+        box-sizing: border-box;
+        margin: 0 auto !important;
+        max-width: 100% !important;
+        overflow: hidden;
+        width: 100% !important;
+    }
+
+    .ultimart-campaign-video iframe {
+        display: block;
+        margin: 0 auto !important;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+}
+
+/* Mobile video alignment fix: keep video centered inside the theme column. */
+@media (max-width: 760px) {
+    .ultimart-home-video {
+        box-sizing: border-box;
+        display: block;
+        left: auto !important;
+        margin: 14px auto 0 !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        position: relative;
+        right: auto !important;
+        text-align: center;
+        transform: none !important;
+        width: 100% !important;
+    }
+
+    .ultimart-campaign-video {
+        box-sizing: border-box;
+        margin: 0 auto !important;
+        max-width: 100% !important;
+        overflow: hidden;
+        width: 100% !important;
+    }
+
+    .ultimart-campaign-video iframe {
+        display: block;
+        margin: 0 auto !important;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+}
+
+/* Mobile video alignment fix: avoid theme/full-bleed rules pushing it right. */
+@media (max-width: 760px) {
+    .ultimart-home-video {
+        box-sizing: border-box;
+        display: block;
+        left: auto !important;
+        margin: 14px auto 0 !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        position: relative;
+        right: auto !important;
+        text-align: center;
+        transform: none !important;
+        width: 100% !important;
+    }
+
+    .ultimart-campaign-video {
+        box-sizing: border-box;
+        margin: 0 auto !important;
+        max-width: 100% !important;
+        overflow: hidden;
+        width: 100% !important;
+    }
+
+    .ultimart-campaign-video iframe {
+        display: block;
+        margin: 0 auto !important;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+}
+
 /* Product-first storefront: keep video/products above long marketing copy. */
 .ultimart-home-video {
     margin: 0 0 14px;
@@ -3106,5 +3202,37 @@
 
     .ultimart-product-card__media {
         aspect-ratio: 1.08 / 1;
+    }
+}
+
+/* Mobile video alignment fix: keep video centered inside the theme column. */
+@media (max-width: 760px) {
+    .ultimart-home-video {
+        box-sizing: border-box;
+        display: block;
+        left: auto !important;
+        margin: 14px auto 0 !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        position: relative;
+        right: auto !important;
+        text-align: center;
+        transform: none !important;
+        width: 100% !important;
+    }
+
+    .ultimart-campaign-video {
+        box-sizing: border-box;
+        margin: 0 auto !important;
+        max-width: 100% !important;
+        overflow: hidden;
+        width: 100% !important;
+    }
+
+    .ultimart-campaign-video iframe {
+        display: block;
+        margin: 0 auto !important;
+        max-width: 100% !important;
+        width: 100% !important;
     }
 }

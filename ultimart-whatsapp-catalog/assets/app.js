@@ -10,7 +10,7 @@
 
     function formatMoney(amount, symbol) {
         var numeric = Number(amount || 0);
-        return numeric.toLocaleString("bn-BD") + " " + symbol;
+        return numeric.toLocaleString("en-US") + " " + symbol;
     }
 
     document.querySelectorAll("[data-product-detail]").forEach(function (section) {
@@ -70,9 +70,9 @@
                 "",
                 "পণ্যের নাম: " + product.name,
                 "পরিমাণ: " + quantity,
-                "সাবটোটাল: " + formatMoney(getSubtotal(), payload.currencySymbol || "৳"),
-                "ডেলিভারি: " + delivery.label + " - " + formatMoney(delivery.charge, payload.currencySymbol || "৳"),
-                "মোট দাম: " + formatMoney(getTotal(), payload.currencySymbol || "৳")
+                "Subtotal: " + formatMoney(getSubtotal(), payload.currencySymbol || "৳"),
+                "Delivery Charge: " + delivery.label + " - " + formatMoney(delivery.charge, payload.currencySymbol || "৳"),
+                "Total: " + formatMoney(getTotal(), payload.currencySymbol || "৳")
             ];
 
             whatsappLink.href = "https://wa.me/" + payload.whatsapp + "?text=" + encodeURIComponent(lines.join("\n"));
